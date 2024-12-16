@@ -12,7 +12,7 @@ TEST(ae_memory_block_get_element_size, valid_pointer) {
 
 TEST(ae_memory_block_get_element_size, null_pointer) {
   ae_memory_block_get_element_size(nullptr);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_block_size, valid_pointer) {
@@ -25,7 +25,7 @@ TEST(ae_memory_block_size, valid_pointer) {
 
 TEST(ae_memory_block_size, null_pointer) {
   EXPECT_EQ(ae_memory_block_size(nullptr), 0);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_block_is_empty, block_is_empty_when_size_is_zero) {
@@ -69,7 +69,7 @@ TEST(ae_memory_block_swap, swap_blocks_with_different_element_size) {
   ae_memory_block_t source = ae_memory_block_empty_initializer(12);
 
   ae_memory_block_swap(&self, &source);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()),
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_DIFFERENT_ELEMENT_SIZE);
 }
 
@@ -95,7 +95,7 @@ TEST(ae_memory_block_exchange, swap_blocks_with_different_element_size) {
   ae_memory_block_t source = ae_memory_block_empty_initializer(12);
 
   ae_memory_block_exchange(&self, &source);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()),
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_DIFFERENT_ELEMENT_SIZE);
 }
 
@@ -114,14 +114,14 @@ TEST(ae_memory_block_element_base_address, pointer_out_of_range_error) {
   int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   const ae_memory_block_t block = ae_memory_block_empty_initializer(sizeof(int));
   ae_memory_block_element_base_address(&block, &buffer[4]);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()), AE_RUNTIME_ERROR_OUT_OF_RANGE);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
 TEST(ae_memory_block_element_base_address, zero_element_size_error) {
   char buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   const ae_memory_block_t block = ae_memory_block_initializer(buffer, &buffer[10], 0);
   ae_memory_block_element_base_address(&block, (char *)&buffer[4] + 2);
-  EXPECT_EQ(ae_error_clear(ae_runtime_error()), AE_RUNTIME_ERROR_ZERO_ELEMENT_SIZE);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_ZERO_ELEMENT_SIZE);
 }
 
 TEST(ae_memory_block_has_index, valid_index_returns_true) {
