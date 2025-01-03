@@ -1,8 +1,8 @@
 #include <ae/memory_block.h>
 #include <ae/memory_block_initializer.h>
+#include <ae/runtime_error.h>
 #include <ae/runtime_error_code.h>
 #include <ae/static_array_size.h>
-#include <ae/runtime_error.h>
 #include <gtest/gtest.h>
 
 TEST(ae_memory_block_get_element_size, valid_pointer) {
@@ -12,7 +12,8 @@ TEST(ae_memory_block_get_element_size, valid_pointer) {
 
 TEST(ae_memory_block_get_element_size, null_pointer) {
   ae_memory_block_get_element_size(nullptr);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_block_size, valid_pointer) {
@@ -25,7 +26,8 @@ TEST(ae_memory_block_size, valid_pointer) {
 
 TEST(ae_memory_block_size, null_pointer) {
   EXPECT_EQ(ae_memory_block_size(nullptr), 0);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_NULL_POINTER);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_block_is_empty, block_is_empty_when_size_is_zero) {
@@ -40,7 +42,8 @@ TEST(ae_memory_block_is_empty, block_is_not_empty_when_size_is_non_zero) {
   EXPECT_FALSE(ae_memory_block_is_empty(&block));
 }
 
-TEST(ae_memory_block_is_empty, block_is_not_empty_when_raw_memory_is_not_empty) {
+TEST(ae_memory_block_is_empty,
+     block_is_not_empty_when_raw_memory_is_not_empty) {
   char buffer[] = {0, 0, 0, 0, 1, 0, 0, 0, 0};
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[9], sizeof(char));
@@ -99,51 +102,79 @@ TEST(ae_memory_block_exchange, swap_blocks_with_different_element_size) {
             AE_RUNTIME_ERROR_DIFFERENT_ELEMENT_SIZE);
 }
 
-TEST(ae_memory_block_element_base_address, valid_pointer_returns_base_address) {
-  int buffer[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
-
-  const void *ptr =
-      ae_memory_block_element_base_address(&block, reinterpret_cast<char *>(&buffer[4]) + 2);
-
-  EXPECT_EQ(ptr, &buffer[4]); // Округление вниз до 4
-}
-
-TEST(ae_memory_block_element_base_address, pointer_out_of_range_error) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block = ae_memory_block_empty_initializer(sizeof(int));
-  ae_memory_block_element_base_address(&block, &buffer[4]);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_OUT_OF_RANGE);
-}
-
-TEST(ae_memory_block_element_base_address, zero_element_size_error) {
-  char buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block = ae_memory_block_initializer(buffer, &buffer[10], 0);
-  ae_memory_block_element_base_address(&block, (char *)&buffer[4] + 2);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()), AE_RUNTIME_ERROR_ZERO_ELEMENT_SIZE);
-}
-
 TEST(ae_memory_block_has_index, valid_index_returns_true) {
   char buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[10], sizeof(char));
 
-  EXPECT_TRUE(ae_memory_block_has_index(&block, 0, false)); // Первый элемент
-  EXPECT_TRUE(ae_memory_block_has_index(&block, 5, false)); // Средний элемент
-  EXPECT_TRUE(ae_memory_block_has_index(&block, 9, false)); // Последний элемент
+  EXPECT_TRUE(ae_memory_block_has_index(&block, 0)); // Первый элемент
+  EXPECT_TRUE(ae_memory_block_has_index(&block, 5)); // Средний элемент
+  EXPECT_TRUE(ae_memory_block_has_index(&block, 9)); // Последний элемент
 }
 
 TEST(ae_memory_block_has_index, invalid_index_returns_false) {
   unsigned long long buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[10], sizeof(unsigned long long));
+  const ae_memory_block_t block = ae_memory_block_initializer(
+      buffer, &buffer[10], sizeof(unsigned long long));
 
   // На один больше максимального
-  EXPECT_FALSE(ae_memory_block_has_index(&block, 10, false));
+  EXPECT_FALSE(ae_memory_block_has_index(&block, 10));
 
   // Значительно больше максимального
-  EXPECT_FALSE(ae_memory_block_has_index(&block, 15, false));
+  EXPECT_FALSE(ae_memory_block_has_index(&block, 15));
+}
+
+TEST(ae_memory_block_has_index_range, valid_index_range) {
+  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
+
+  EXPECT_TRUE(ae_memory_block_has_index_range(&block, 0, 9)); // Полный диапазон
+}
+
+TEST(ae_memory_block_has_index_range, start_index_out_of_bounds) {
+  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
+
+  EXPECT_FALSE(ae_memory_block_has_index_range(
+      &block, 10, 9)); // Начальный индекс вне диапазона
+}
+
+TEST(ae_memory_block_has_index_range, end_index_out_of_bounds) {
+  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[9], sizeof(int));
+
+  EXPECT_FALSE(ae_memory_block_has_index_range(
+      &block, 0, 10)); // Конечный индекс вне диапазона
+}
+
+TEST(ae_memory_block_has_index_range, start_greater_than_end) {
+  int buffer[] = {0, 0, 0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[6], sizeof(int));
+
+  EXPECT_FALSE(ae_memory_block_has_index_range(
+      &block, 5, 3)); // Начальный индекс больше конечного
+}
+
+TEST(ae_memory_block_has_index_range, both_indices_out_of_bounds) {
+  int buffer[] = {0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[4], sizeof(int));
+
+  EXPECT_FALSE(ae_memory_block_has_index_range(
+      &block, 10, 11)); // Оба индекса вне диапазона
+}
+
+TEST(ae_memory_block_has_index_range, single_index_range) {
+  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  const ae_memory_block_t block =
+      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
+
+  EXPECT_TRUE(
+      ae_memory_block_has_index_range(&block, 5, 5)); // Проверка одного индекса
 }
 
 TEST(ae_memory_block_at, at_from_begin_valid_index) {
@@ -207,7 +238,8 @@ TEST(ae_memory_block_front, front_returns_first_element) {
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[10], sizeof(char));
 
-  EXPECT_EQ(*static_cast<const char *>(ae_memory_block_front(&block)), 'A'); // Первый элемент
+  EXPECT_EQ(*static_cast<const char *>(ae_memory_block_front(&block)),
+            'A'); // Первый элемент
 }
 
 TEST(ae_memory_block_back, back_returns_last_element) {
@@ -215,7 +247,8 @@ TEST(ae_memory_block_back, back_returns_last_element) {
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[10], sizeof(char));
 
-  EXPECT_EQ(*static_cast<const char *>(ae_memory_block_back(&block)), 'J'); // Последний элемент
+  EXPECT_EQ(*static_cast<const char *>(ae_memory_block_back(&block)),
+            'J'); // Последний элемент
 }
 
 TEST(ae_memory_block_front, front_on_empty_block_returns_null) {

@@ -70,74 +70,69 @@ TEST(ae_memory_range_diff, null_pointer) {
   EXPECT_EQ(ae_memory_range_diff(nullptr), 0);
 }
 
-TEST(ae_memory_range_has_ptr, contains_with_end) {
-  const ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000), true));
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000), true));
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500), true));
-
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x0FFF), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2001), true));
-}
-
 TEST(ae_memory_range_has_ptr, contains_without_end) {
   ae_memory_range_t range =
       ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
 
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000), false));
+  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000)));
 
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000), false));
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500), false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000)));
+  EXPECT_TRUE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500)));
 
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x0FFF), false));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2001), false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x0FFF)));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2001)));
 }
 
 TEST(ae_memory_range_has_ptr, null_pointer) {
-  EXPECT_FALSE(ae_memory_range_has_ptr(nullptr, reinterpret_cast<void *>(0x1000), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(nullptr, reinterpret_cast<void *>(0x1000), false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(nullptr, reinterpret_cast<void *>(0x1000)));
 
   ae_memory_range_t range =
       ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
 
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr));
 }
 
 TEST(ae_memory_range_has_ptr, contains_pointer_when_end_is_less_than_begin) {
   const ae_memory_range_t range =
       ae_memory_range_initializer(reinterpret_cast<void *>(0x2000), reinterpret_cast<void *>(0x1000));
 
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x0FFF), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2500), true));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500)));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000)));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000)));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x0FFF)));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2500)));
 }
 
 TEST(ae_memory_range_has_ptr, nullptr_in_begin) {
   const ae_memory_range_t range = ae_memory_range_initializer(nullptr, reinterpret_cast<void *>(100));
-
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr));
 }
 
 TEST(ae_memory_range_has_ptr, nullptr_in_end) {
   const ae_memory_range_t range = ae_memory_range_initializer(reinterpret_cast<void *>(50), nullptr);
-
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, false));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr));
 }
 
 TEST(ae_memory_range_has_ptr, both_begin_and_end_are_null) {
   constexpr ae_memory_range_t range = ae_memory_range_empty_initializer();
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr));
+  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(1)));
+}
 
-  EXPECT_TRUE(ae_memory_range_has_ptr(&range, nullptr, true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, nullptr, false));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(1), true));
-  EXPECT_FALSE(ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(1), false));
+TEST(ae_memory_range_has_range, valid_range) {
+    ae_memory_range_t self = ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x3000));
+    EXPECT_TRUE(ae_memory_range_has_range(&self, (void*)0x1500, (void*)0x2500));
+}
+
+TEST(ae_memory_range_has_range, pointer_inside_range) {
+    ae_memory_range_t self = ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
+    EXPECT_TRUE(ae_memory_range_has_range(&self, (void*)0x1250, (void*)0x1500));
+}
+
+TEST(ae_memory_range_has_range, pointer_outside_range) {
+    ae_memory_range_t self = ae_memory_range_empty_initializer();
+    EXPECT_FALSE(ae_memory_range_has_range(&self, nullptr, nullptr));
+    EXPECT_FALSE(ae_memory_range_has_range(&self, (void*)0x1250, (void*)0x1500));
 }
 
 TEST(ae_memory_range_is_valid, empty_range) {
@@ -579,66 +574,6 @@ TEST(ae_memory_range_exchange, exchange_both_nullptr) {
   EXPECT_EQ(range1.end, nullptr);
   EXPECT_EQ(range2.begin, nullptr);
   EXPECT_EQ(range2.end, nullptr);
-}
-
-TEST(ae_memory_range_has_range, contain_range_within_bounds_with_end) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x1500);
-  void *end = reinterpret_cast<void *>(0x1800);
-
-  EXPECT_TRUE(ae_memory_range_has_range(&range, begin, end, true));
-}
-
-TEST(ae_memory_range_has_range, contain_range_with_end) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x1500);
-  void *end = reinterpret_cast<void *>(0x2000);
-
-  EXPECT_TRUE(ae_memory_range_has_range(&range, begin, end, true));
-}
-
-TEST(ae_memory_range_has_range, contain_range_outside_bounds) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x0500);
-  void *end = reinterpret_cast<void *>(0x2500);
-
-  EXPECT_FALSE(ae_memory_range_has_range(&range, begin, end, true));
-}
-
-TEST(ae_memory_range_has_range, contain_range_partially_within_bounds) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x1500);
-  void *end = reinterpret_cast<void *>(0x2500);
-
-  EXPECT_FALSE(ae_memory_range_has_range(&range, begin, end, true));
-}
-
-TEST(ae_memory_range_has_range, contain_range_with_begin_outside) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x0500);
-  void *end = reinterpret_cast<void *>(0x1500);
-
-  EXPECT_FALSE(ae_memory_range_has_range(&range, begin, end, true));
-}
-
-TEST(ae_memory_range_has_range, contain_range_without_end) {
-  ae_memory_range_t range =
-      ae_memory_range_initializer(reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
-
-  void *begin = reinterpret_cast<void *>(0x1500);
-  void *end = reinterpret_cast<void *>(0x2000);
-
-  EXPECT_FALSE(ae_memory_range_has_range(&range, begin, end, false));
 }
 
 TEST(ae_memory_range_at, at_valid_index) {
