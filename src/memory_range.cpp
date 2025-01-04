@@ -694,3 +694,94 @@ TEST(ae_memory_range_insert_value, full_memory) {
   ae_memory_range_insert_value(&memory_range, 3, 42);
   EXPECT_EQ(buffer[3], 42);
 }
+
+TEST(ae_memory_range_make, valid_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_make(memory, memory + 9);
+
+  EXPECT_EQ(range.begin, memory);
+  EXPECT_EQ(range.end, memory + 9);
+}
+
+TEST(ae_memory_range_make, invalid_range_end_before_start) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_make(memory + 5, memory + 2);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_INVALID_MEMORY_RANGE);
+}
+
+TEST(ae_memory_range_make, null_pointers) {
+  ae_memory_range_make(nullptr, nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OK);
+}
+
+TEST(ae_memory_range_make, empty_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_make(memory, memory);
+
+  EXPECT_EQ(range.begin, memory);
+  EXPECT_EQ(range.end, memory);
+}
+
+TEST(ae_memory_range_make, single_element_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_make(memory + 3, memory + 3);
+
+  EXPECT_EQ(range.begin, memory + 3);
+  EXPECT_EQ(range.end, memory + 3);
+}
+
+TEST(ae_memory_range_make_sub_range, valid_sub_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t main_range =
+      ae_memory_range_initializer(memory, memory + 9);
+
+  ae_memory_range_t sub_range =
+      ae_memory_range_make_sub_range(&main_range, memory + 3, memory + 7);
+
+  EXPECT_EQ(sub_range.begin, memory + 3);
+  EXPECT_EQ(sub_range.end, memory + 7);
+}
+
+TEST(ae_memory_range_make_sub_range, sub_range_out_of_bounds) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t main_range =
+      ae_memory_range_initializer(memory, memory + 9);
+
+  ae_memory_range_make_sub_range(&main_range, memory + 5, memory + 15);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_make_sub_range, sub_range_invalid_order) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t main_range =
+      ae_memory_range_initializer(memory, memory + 9);
+
+  ae_memory_range_make_sub_range(&main_range, memory + 7, memory + 3);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_make_sub_range, sub_range_start_out_of_bounds) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t main_range =
+      ae_memory_range_initializer(memory, memory + 9);
+
+  ae_memory_range_make_sub_range(&main_range, memory + 10, memory + 15);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_make_sub_range, empty_sub_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t main_range =
+      ae_memory_range_initializer(memory, memory + 9);
+
+  ae_memory_range_t sub_range =
+      ae_memory_range_make_sub_range(&main_range, memory + 4, memory + 4);
+
+  EXPECT_EQ(sub_range.begin, memory + 4);
+  EXPECT_EQ(sub_range.end, memory + 4);
+}
