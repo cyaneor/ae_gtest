@@ -769,7 +769,7 @@ TEST(ae_memory_range_at, empty_range) {
             AE_RUNTIME_ERROR_OK);
 }
 
-TEST(ae_memory_block_front, valid_range) {
+TEST(ae_memory_range_front, valid_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
 
@@ -777,7 +777,7 @@ TEST(ae_memory_block_front, valid_range) {
   EXPECT_EQ(ptr, memory);
 }
 
-TEST(ae_memory_block_front, empty_range) {
+TEST(ae_memory_range_front, empty_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
 
@@ -786,7 +786,7 @@ TEST(ae_memory_block_front, empty_range) {
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_block_front, single_element_range) {
+TEST(ae_memory_range_front, single_element_range) {
   ae_u8_t memory[1] = {0};
   ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[1]);
 
@@ -794,7 +794,7 @@ TEST(ae_memory_block_front, single_element_range) {
   EXPECT_EQ(ptr, memory);
 }
 
-TEST(ae_memory_block_front, multiple_elements_range) {
+TEST(ae_memory_range_front, multiple_elements_range) {
   ae_u8_t memory[5] = {1, 2, 3, 4, 5};
   ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
 
@@ -802,7 +802,7 @@ TEST(ae_memory_block_front, multiple_elements_range) {
   EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 1);
 }
 
-TEST(ae_memory_block_front, zero_element) {
+TEST(ae_memory_range_front, zero_element) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
 
