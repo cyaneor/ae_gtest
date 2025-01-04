@@ -604,43 +604,251 @@ TEST(ae_memory_range_exchange, exchange_both_nullptr) {
   EXPECT_EQ(range2.end, nullptr);
 }
 
-TEST(ae_memory_range_at, at_valid_index) {
+TEST(ae_memory_range_at_from_begin, at_valid_index) {
   char data[] = "ABCDEFGHI";
   ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
 
-  EXPECT_EQ(ae_memory_range_at(&range, 0), &data[0]);
-  EXPECT_EQ(ae_memory_range_at(&range, 5), &data[5]);
-  EXPECT_EQ(ae_memory_range_at(&range, 9), &data[9]);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 0), &data[0]);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 5), &data[5]);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 9), &data[9]);
 }
 
-TEST(ae_memory_range_at, at_index_out_of_range) {
+TEST(ae_memory_range_at_from_begin, at_index_out_of_range) {
   char data[] = "ABCDEFGHI";
   ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
 
-  EXPECT_EQ(ae_memory_range_at(&range, 10), nullptr);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 10), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 
-  EXPECT_EQ(ae_memory_range_at(&range, 11), nullptr);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_OUT_OF_RANGE);
-}
-
-TEST(ae_memory_range_at, at_negative_index) {
-  char data[] = "ABCDEFGHI";
-  ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
-
-  EXPECT_EQ(ae_memory_range_at(&range, -1), nullptr);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 11), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_at, at_empty_range) {
+TEST(ae_memory_range_at_from_begin, at_negative_index) {
+  char data[] = "ABCDEFGHI";
+  ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
+
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, -1), nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at_from_begin, at_empty_range) {
   ae_memory_range_t range = ae_memory_range_empty_initializer();
 
-  EXPECT_EQ(ae_memory_range_at(&range, 0), nullptr);
+  EXPECT_EQ(ae_memory_range_at_from_begin(&range, 0), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at_from_end, valid_offset) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  void *ptr = ae_memory_range_at_from_end(&range, 0);
+  EXPECT_EQ(ptr, memory + 9);
+
+  ptr = ae_memory_range_at_from_end(&range, 1);
+  EXPECT_EQ(ptr, memory + 8);
+
+  ptr = ae_memory_range_at_from_end(&range, 9);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_range_at_from_end, out_of_bounds) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  ae_memory_range_at_from_end(&range, 10);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at_from_end, empty_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, memory);
+
+  ae_memory_range_at_from_end(&range, 0);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at_from_end, single_element_range) {
+  ae_u8_t memory[1] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[1]);
+
+  void *ptr = ae_memory_range_at_from_end(&range, 0);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_range_at_from_end, multiple_elements_range) {
+  ae_u8_t memory[5] = {1, 2, 3, 4, 5};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
+
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ae_memory_range_at_from_end(&range, 0))),
+            5);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ae_memory_range_at_from_end(&range, 1))),
+            4);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ae_memory_range_at_from_end(&range, 2))),
+            3);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ae_memory_range_at_from_end(&range, 3))),
+            2);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ae_memory_range_at_from_end(&range, 4))),
+            1);
+}
+
+TEST(ae_memory_range_at, from_begin) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  void *ptr = ae_memory_range_at(&range, 3, false);
+  EXPECT_EQ(ptr, memory + 3);
+
+  ptr = ae_memory_range_at(&range, 7, false);
+  EXPECT_EQ(ptr, memory + 7);
+
+  ptr = ae_memory_range_at(&range, 0, false);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_range_at, from_end) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  void *ptr = ae_memory_range_at(&range, 0, true);
+  EXPECT_EQ(ptr, memory + 9);
+
+  ptr = ae_memory_range_at(&range, 1, true);
+  EXPECT_EQ(ptr, memory + 8);
+
+  ptr = ae_memory_range_at(&range, 9, true);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_range_at, out_of_bounds_reversed) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  ae_memory_range_at(&range, 10, true);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at, out_of_bounds_not_reversed) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  ae_memory_range_at(&range, 10, false);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_range_at, single_element_range) {
+  ae_u8_t memory[1] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[1]);
+
+  void *ptr = ae_memory_range_at(&range, 0, false);
+  EXPECT_EQ(ptr, memory);
+
+  ptr = ae_memory_range_at(&range, 0, true);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_range_at, empty_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  EXPECT_EQ(ae_memory_range_at(&range, 0, false), &memory[0]);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OK);
+
+  EXPECT_EQ(ae_memory_range_at(&range, 0, true), &memory[9]);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OK);
+}
+
+TEST(ae_memory_block_front, valid_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  void *ptr = ae_memory_range_front(&range);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_block_front, empty_range) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  ae_memory_range_front(&range);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
+}
+
+TEST(ae_memory_block_front, single_element_range) {
+  ae_u8_t memory[1] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[1]);
+
+  void *ptr = ae_memory_range_front(&range);
+  EXPECT_EQ(ptr, memory);
+}
+
+TEST(ae_memory_block_front, multiple_elements_range) {
+  ae_u8_t memory[5] = {1, 2, 3, 4, 5};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
+
+  void *ptr = ae_memory_range_front(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 1);
+}
+
+TEST(ae_memory_block_front, zero_element) {
+  ae_u8_t memory[10] = {0};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+
+  memory[0] = 100;
+
+  void *ptr = ae_memory_range_front(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 100);
+}
+
+TEST(ae_memory_block_back, multiple_elements_range) {
+  ae_u8_t memory[5] = {1, 2, 3, 4, 5};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
+
+  void *ptr = ae_memory_range_back(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 5);
+}
+
+TEST(ae_memory_block_back, single_element_range) {
+  ae_u8_t memory[1] = {10};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[1]);
+
+  void *ptr = ae_memory_range_back(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 10);
+}
+
+TEST(ae_memory_block_back, empty_range) {
+  ae_u8_t memory[10] = {0};
+
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+  EXPECT_EQ(ae_memory_range_back(&range), &memory[9]);
+}
+
+TEST(ae_memory_block_back, range_with_zero_first_element) {
+  ae_u8_t memory[5] = {0, 2, 3, 4, 5};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
+
+  void *ptr = ae_memory_range_back(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 5);
+}
+
+TEST(ae_memory_block_back, range_with_identical_elements) {
+  ae_u8_t memory[5] = {7, 7, 7, 7, 7};
+  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[5]);
+
+  void *ptr = ae_memory_range_back(&range);
+  EXPECT_EQ(*(static_cast<ae_u8_t *>(ptr)), 7);
 }
 
 TEST(ae_memory_range_insert_value, insert_value) {
