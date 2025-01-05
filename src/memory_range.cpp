@@ -604,7 +604,7 @@ TEST(ae_memory_range_exchange, exchange_both_nullptr) {
   EXPECT_EQ(range2.end, nullptr);
 }
 
-TEST(ae_memory_range_at_from_begin, at_valid_index) {
+TEST(ae_memory_range_at_from_begin, valid_index) {
   char data[] = "ABCDEFGHI";
   ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
 
@@ -613,7 +613,7 @@ TEST(ae_memory_range_at_from_begin, at_valid_index) {
   EXPECT_EQ(ae_memory_range_at_from_begin(&range, 9), &data[9]);
 }
 
-TEST(ae_memory_range_at_from_begin, at_index_out_of_range) {
+TEST(ae_memory_range_at_from_begin, index_out_of_range) {
   char data[] = "ABCDEFGHI";
   ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
 
@@ -626,7 +626,7 @@ TEST(ae_memory_range_at_from_begin, at_index_out_of_range) {
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_at_from_begin, at_negative_index) {
+TEST(ae_memory_range_at_from_begin, negative_index) {
   char data[] = "ABCDEFGHI";
   ae_memory_range_t range = ae_memory_range_initializer(data, data + 10);
 
@@ -635,7 +635,7 @@ TEST(ae_memory_range_at_from_begin, at_negative_index) {
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_at_from_begin, at_empty_range) {
+TEST(ae_memory_range_at_from_begin, empty_range) {
   ae_memory_range_t range = ae_memory_range_empty_initializer();
 
   EXPECT_EQ(ae_memory_range_at_from_begin(&range, 0), nullptr);

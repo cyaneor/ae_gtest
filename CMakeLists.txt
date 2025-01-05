@@ -1,5 +1,5 @@
 # Задаем минимально необходимую версию для CMake.
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 # Включение модуля FetchContent для загрузки внешних зависимостей.
 include(FetchContent)
@@ -20,15 +20,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(gtest_force_shared_crt ON CACHE BOOL
         "Установка переменной gtest_force_shared_crt значение ON, чтобы использовать общий CRT в Google Test.")
-
-set(AE_OPTION_BUILD_TYPE_SHARED OFF CACHE BOOL
-        "Создать общую динамическую библиотеку.")
-
-set(AE_OPTION_BUILD_IMPORT OFF CACHE BOOL
-        "Импортировать символы для создания общей библиотеки.")
-
-set(AE_OPTION_BUILD_EXPORT OFF CACHE BOOL
-        "Экспортировать символы для создания общей библиотеки.")
 
 set(AE_OPTION_RUNTIME_ALLOCATOR_INIT_STDLIB ON CACHE BOOL
         "Использовать функции из stdlib для инициализации распределителя времени выполнения.")
@@ -74,6 +65,12 @@ add_executable(${PROJECT_NAME}
 
 # Добавление зависимостей и связка с библиотеками.
 target_link_libraries(${PROJECT_NAME} gtest gmock ae)
+
+# Копирование библиотеки ae в директорию с исполняемым файлом
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:ae> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
 
 # ----------------------------------------------------------------
 # Тестирование
