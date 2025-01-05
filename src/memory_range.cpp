@@ -667,10 +667,9 @@ TEST(ae_memory_range_at_from_end, out_of_bounds) {
 }
 
 TEST(ae_memory_range_at_from_end, empty_range) {
-  ae_u8_t memory[10] = {0};
-  ae_memory_range_t range = ae_memory_range_initializer(memory, memory);
+  ae_memory_range_t range = ae_memory_range_empty_initializer();
 
-  ae_memory_range_at_from_end(&range, 0);
+  EXPECT_EQ(ae_memory_range_at_from_end(&range, 0), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
@@ -757,16 +756,15 @@ TEST(ae_memory_range_at, single_element_range) {
 }
 
 TEST(ae_memory_range_at, empty_range) {
-  ae_u8_t memory[10] = {0};
-  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+  ae_memory_range_t range = ae_memory_range_empty_initializer();
 
-  EXPECT_EQ(ae_memory_range_at(&range, 0, false), &memory[0]);
+  EXPECT_EQ(ae_memory_range_at(&range, 0, false), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_OK);
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
 
-  EXPECT_EQ(ae_memory_range_at(&range, 0, true), &memory[9]);
+  EXPECT_EQ(ae_memory_range_at(&range, 0, true), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_OK);
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
 TEST(ae_memory_range_front, valid_range) {
@@ -778,10 +776,9 @@ TEST(ae_memory_range_front, valid_range) {
 }
 
 TEST(ae_memory_range_front, empty_range) {
-  ae_u8_t memory[10] = {0};
-  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
+  ae_memory_range_t range = ae_memory_range_empty_initializer();
 
-  ae_memory_range_front(&range);
+  EXPECT_EQ(ae_memory_range_front(&range), nullptr);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
@@ -829,10 +826,10 @@ TEST(ae_memory_block_back, single_element_range) {
 }
 
 TEST(ae_memory_block_back, empty_range) {
-  ae_u8_t memory[10] = {0};
-
-  ae_memory_range_t range = ae_memory_range_initializer(memory, &memory[10]);
-  EXPECT_EQ(ae_memory_range_back(&range), &memory[9]);
+  ae_memory_range_t range = ae_memory_range_empty_initializer();
+  EXPECT_EQ(ae_memory_range_back(&range), nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
 TEST(ae_memory_block_back, range_with_zero_first_element) {
