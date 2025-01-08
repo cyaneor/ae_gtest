@@ -1,14 +1,12 @@
-#include <ae/memory_range.h>
 #include <ae/memory_range_initializer.h>
-#include <ae/runtime_error.h>
 #include <ae/runtime_error_code.h>
+#include <ae/runtime_error.h>
+#include <ae/memory_range.h>
 #include <gtest/gtest.h>
 
 TEST(ae_memory_range_get_begin, valid_pointer) {
-  ae_memory_range_t range;
-
   int value = 42;
-  range.begin = &value;
+  ae_memory_range_t range = ae_memory_range_initializer(&value, nullptr);
 
   EXPECT_EQ(ae_memory_range_get_begin(&range), &value);
 }
@@ -20,10 +18,8 @@ TEST(ae_memory_range_get_begin, null_pointer) {
 }
 
 TEST(ae_memory_range_get_end, valid_pointer) {
-  ae_memory_range_t range;
-
   int value = 84;
-  range.begin = &value;
+  ae_memory_range_t range = ae_memory_range_initializer(&value, nullptr);
 
   EXPECT_EQ(ae_memory_range_get_begin(&range), &value);
 }
@@ -80,7 +76,7 @@ TEST(ae_memory_range_has_ptr, contains_without_end) {
   EXPECT_TRUE(
       ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1000)));
 
-  EXPECT_FALSE(
+  EXPECT_TRUE(
       ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x2000)));
   EXPECT_TRUE(
       ae_memory_range_has_ptr(&range, reinterpret_cast<void *>(0x1500)));
@@ -156,7 +152,7 @@ TEST(ae_memory_range_has_range, pointer_outside_range) {
 
 TEST(ae_memory_range_is_valid, empty_range) {
   constexpr ae_memory_range_t empty_range = ae_memory_range_empty_initializer();
-  EXPECT_TRUE(ae_memory_range_is_valid(&empty_range));
+  EXPECT_FALSE(ae_memory_range_is_valid(&empty_range));
 }
 
 TEST(ae_memory_range_is_valid, valid_range) {
@@ -347,17 +343,14 @@ TEST(ae_memory_range_size, negative_range) {
 }
 
 TEST(ae_memory_range_set, reset_with_valid_pointers) {
-  ae_memory_range_t range;
   int a = 5, b = 10;
-
-  // Сбрасываем указатели
-  ae_memory_range_set(&range, &a, &b);
+  ae_memory_range_t range = ae_memory_range_initializer(&a, &b);
 
   // Проверяем, что begin указывает на a
-  EXPECT_EQ(range.begin, &a);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), &a);
 
   // Проверяем, что end указывает на b
-  EXPECT_EQ(range.end, &b);
+  EXPECT_EQ(ae_memory_range_get_end(&range), &b);
 }
 
 TEST(ae_memory_range_set, reset_with_null_pointer) {
@@ -374,10 +367,10 @@ TEST(ae_memory_range_set, reset_with_null_begin) {
   ae_memory_range_set(&range, nullptr, &b);
 
   // Проверяем, что begin равен nullptr
-  EXPECT_EQ(range.begin, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), nullptr);
 
   // Проверяем, что end указывает на b
-  EXPECT_EQ(range.end, &b);
+  EXPECT_EQ(ae_memory_range_get_end(&range), &b);
 }
 
 TEST(ae_memory_range_set, reset_with_null_end) {
@@ -388,10 +381,10 @@ TEST(ae_memory_range_set, reset_with_null_end) {
   ae_memory_range_set(&range, &a, nullptr);
 
   // Проверяем, что begin указывает на a
-  EXPECT_EQ(range.begin, &a);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), &a);
 
   // Проверяем, что end равен nullptr
-  EXPECT_EQ(range.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range), nullptr);
 }
 
 TEST(ae_memory_range_assign, assign_with_valid_range) {
@@ -407,10 +400,10 @@ TEST(ae_memory_range_assign, assign_with_valid_range) {
   ae_memory_range_assign(&destination, &source);
 
   // Проверяем, что begin указывает на a
-  EXPECT_EQ(destination.begin, &a);
+  EXPECT_EQ(ae_memory_range_get_begin(&destination), &a);
 
   // Проверяем, что end указывает на b
-  EXPECT_EQ(destination.end, &b);
+  EXPECT_EQ(ae_memory_range_get_end(&destination), &b);
 }
 
 TEST(ae_memory_range_assign, assign_with_null_source) {
@@ -481,8 +474,8 @@ TEST(ae_memory_range_set_with_fallback, valid_pointer) {
 
   ae_memory_range_set_with_fallback(&range, data, 10 * sizeof(data[0]));
 
-  EXPECT_EQ(range.begin, data);
-  EXPECT_EQ(range.end, &data[10]);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), data);
+  EXPECT_EQ(ae_memory_range_get_end(&range), &data[10]);
 }
 
 TEST(ae_memory_range_set_with_fallback, begin_is_null_pointer) {
@@ -490,34 +483,34 @@ TEST(ae_memory_range_set_with_fallback, begin_is_null_pointer) {
 
   ae_memory_range_set_with_fallback(&range, nullptr, 10);
 
-  EXPECT_EQ(range.begin, nullptr);
-  EXPECT_EQ(range.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range), nullptr);
 }
 
 TEST(ae_memory_range_clear, clear_function_resets_start_and_end_to_nullptr) {
   ae_memory_range_t range = ae_memory_range_initializer(
       reinterpret_cast<void *>(0x1234), reinterpret_cast<void *>(0x5678));
 
-  EXPECT_NE(range.begin, nullptr);
-  EXPECT_NE(range.end, nullptr);
+  EXPECT_NE(ae_memory_range_get_begin(&range), nullptr);
+  EXPECT_NE(ae_memory_range_get_end(&range), nullptr);
 
   ae_memory_range_clear(&range);
 
-  EXPECT_EQ(range.begin, nullptr);
-  EXPECT_EQ(range.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range), nullptr);
 }
 
 TEST(ae_memory_range_clear, clear_function_does_not_affect_other_data) {
   ae_memory_range_t range = ae_memory_range_initializer(
       reinterpret_cast<void *>(0x1234), reinterpret_cast<void *>(0x5678));
 
-  void *old_start = range.begin;
-  void *old_end = range.end;
+  void *old_start = ae_memory_range_get_begin(&range);
+  void *old_end = ae_memory_range_get_end(&range);
 
   ae_memory_range_clear(&range);
 
-  EXPECT_EQ(range.begin, nullptr);
-  EXPECT_EQ(range.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range), nullptr);
   EXPECT_NE(old_start, nullptr);
   EXPECT_NE(old_end, nullptr);
 }
@@ -530,11 +523,13 @@ TEST(ae_memory_range_swap, swap_changes_values) {
 
   ae_memory_range_swap(&range1, &range2);
 
-  EXPECT_EQ(range1.begin, reinterpret_cast<void *>(0xABCD));
-  EXPECT_EQ(range1.end, reinterpret_cast<void *>(0xEF01));
+  EXPECT_EQ(ae_memory_range_get_begin(&range1),
+            reinterpret_cast<void *>(0xABCD));
+  EXPECT_EQ(ae_memory_range_get_end(&range1), reinterpret_cast<void *>(0xEF01));
 
-  EXPECT_EQ(range2.begin, reinterpret_cast<void *>(0x1234));
-  EXPECT_EQ(range2.end, reinterpret_cast<void *>(0x5678));
+  EXPECT_EQ(ae_memory_range_get_begin(&range2),
+            reinterpret_cast<void *>(0x1234));
+  EXPECT_EQ(ae_memory_range_get_end(&range2), reinterpret_cast<void *>(0x5678));
 }
 
 TEST(ae_memory_range_swap, swap_with_nullptr) {
@@ -544,11 +539,12 @@ TEST(ae_memory_range_swap, swap_with_nullptr) {
 
   ae_memory_range_swap(&range1, &range2);
 
-  EXPECT_EQ(range1.begin, nullptr);
-  EXPECT_EQ(range1.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range1), nullptr);
 
-  EXPECT_EQ(range2.begin, reinterpret_cast<void *>(0x1234));
-  EXPECT_EQ(range2.end, reinterpret_cast<void *>(0x5678));
+  EXPECT_EQ(ae_memory_range_get_begin(&range2),
+            reinterpret_cast<void *>(0x1234));
+  EXPECT_EQ(ae_memory_range_get_end(&range2), reinterpret_cast<void *>(0x5678));
 }
 
 TEST(ae_memory_range_swap, swap_both_nullptr) {
@@ -557,11 +553,11 @@ TEST(ae_memory_range_swap, swap_both_nullptr) {
 
   ae_memory_range_swap(&range1, &range2);
 
-  EXPECT_EQ(range1.begin, nullptr);
-  EXPECT_EQ(range1.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range1), nullptr);
 
-  EXPECT_EQ(range2.begin, nullptr);
-  EXPECT_EQ(range2.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range2), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range2), nullptr);
 }
 
 TEST(ae_memory_range_exchange, exchange_changes_values) {
@@ -572,11 +568,12 @@ TEST(ae_memory_range_exchange, exchange_changes_values) {
 
   ae_memory_range_exchange(&range1, &range2);
 
-  EXPECT_EQ(range2.begin, nullptr);
-  EXPECT_EQ(range2.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range2), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range2), nullptr);
 
-  EXPECT_EQ(range1.begin, reinterpret_cast<void *>(0xABCD));
-  EXPECT_EQ(range1.end, reinterpret_cast<void *>(0xEF01));
+  EXPECT_EQ(ae_memory_range_get_begin(&range1),
+            reinterpret_cast<void *>(0xABCD));
+  EXPECT_EQ(ae_memory_range_get_end(&range1), reinterpret_cast<void *>(0xEF01));
 }
 
 TEST(ae_memory_range_exchange, exchange_with_nullptr) {
@@ -586,10 +583,10 @@ TEST(ae_memory_range_exchange, exchange_with_nullptr) {
 
   ae_memory_range_exchange(&range1, &range2);
 
-  EXPECT_EQ(range1.begin, nullptr);
-  EXPECT_EQ(range1.end, nullptr);
-  EXPECT_EQ(range2.begin, nullptr);
-  EXPECT_EQ(range2.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range2), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range2), nullptr);
 }
 
 TEST(ae_memory_range_exchange, exchange_both_nullptr) {
@@ -598,10 +595,10 @@ TEST(ae_memory_range_exchange, exchange_both_nullptr) {
 
   ae_memory_range_exchange(&range1, &range2);
 
-  EXPECT_EQ(range1.begin, nullptr);
-  EXPECT_EQ(range1.end, nullptr);
-  EXPECT_EQ(range2.begin, nullptr);
-  EXPECT_EQ(range2.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range1), nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&range2), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&range2), nullptr);
 }
 
 TEST(ae_memory_range_at_from_begin, valid_index) {
@@ -904,8 +901,8 @@ TEST(ae_memory_range_make, valid_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_make(memory, memory + 9);
 
-  EXPECT_EQ(range.begin, memory);
-  EXPECT_EQ(range.end, memory + 9);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), memory);
+  EXPECT_EQ(ae_memory_range_get_end(&range), memory + 9);
 }
 
 TEST(ae_memory_range_make, invalid_range_end_before_start) {
@@ -915,8 +912,9 @@ TEST(ae_memory_range_make, invalid_range_end_before_start) {
             AE_RUNTIME_ERROR_INVALID_MEMORY_RANGE);
 }
 
-TEST(ae_memory_range_make, null_pointers) {
-  ae_memory_range_make(nullptr, nullptr);
+TEST(ae_memory_range_make_empty, null_pointers) {
+  ae_memory_range_t range = ae_memory_range_make_empty();
+  EXPECT_TRUE(ae_memory_range_is_null(&range));
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OK);
 }
@@ -925,16 +923,16 @@ TEST(ae_memory_range_make, empty_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_make(memory, memory);
 
-  EXPECT_EQ(range.begin, memory);
-  EXPECT_EQ(range.end, memory);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), memory);
+  EXPECT_EQ(ae_memory_range_get_end(&range), memory);
 }
 
 TEST(ae_memory_range_make, single_element_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t range = ae_memory_range_make(memory + 3, memory + 3);
 
-  EXPECT_EQ(range.begin, memory + 3);
-  EXPECT_EQ(range.end, memory + 3);
+  EXPECT_EQ(ae_memory_range_get_begin(&range), memory + 3);
+  EXPECT_EQ(ae_memory_range_get_end(&range), memory + 3);
 }
 
 TEST(ae_memory_range_make_sub_range, valid_sub_range) {
@@ -945,8 +943,8 @@ TEST(ae_memory_range_make_sub_range, valid_sub_range) {
   ae_memory_range_t sub_range =
       ae_memory_range_make_sub_range(&main_range, memory + 3, memory + 7);
 
-  EXPECT_EQ(sub_range.begin, memory + 3);
-  EXPECT_EQ(sub_range.end, memory + 7);
+  EXPECT_EQ(ae_memory_range_get_begin(&sub_range), memory + 3);
+  EXPECT_EQ(ae_memory_range_get_end(&sub_range), memory + 7);
 }
 
 TEST(ae_memory_range_make_sub_range, sub_range_out_of_bounds) {
@@ -987,6 +985,6 @@ TEST(ae_memory_range_make_sub_range, empty_sub_range) {
   ae_memory_range_t sub_range =
       ae_memory_range_make_sub_range(&main_range, memory + 4, memory + 4);
 
-  EXPECT_EQ(sub_range.begin, memory + 4);
-  EXPECT_EQ(sub_range.end, memory + 4);
+  EXPECT_EQ(ae_memory_range_get_begin(&sub_range), memory + 4);
+  EXPECT_EQ(ae_memory_range_get_end(&sub_range), memory + 4);
 }

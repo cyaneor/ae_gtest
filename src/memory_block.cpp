@@ -1,8 +1,9 @@
-#include <ae/memory_block.h>
 #include <ae/memory_block_initializer.h>
-#include <ae/runtime_error.h>
 #include <ae/runtime_error_code.h>
 #include <ae/static_array_size.h>
+#include <ae/runtime_error.h>
+#include <ae/memory_block.h>
+#include <ae/memory_range.h>
 #include <gtest/gtest.h>
 
 TEST(ae_memory_block_get_element_size, valid_pointer) {
@@ -61,10 +62,10 @@ TEST(ae_memory_block_swap, swap_blocks_with_equal_element_size) {
 
   ae_memory_block_swap(&self, &source);
 
-  EXPECT_EQ(self.begin, &source_buffer[0]);
-  EXPECT_EQ(self.end, &source_buffer[9]);
-  EXPECT_EQ(source.begin, &self_buffer[0]);
-  EXPECT_EQ(source.end, &self_buffer[9]);
+  EXPECT_EQ(ae_memory_range_get_begin(&self), &source_buffer[0]);
+  EXPECT_EQ(ae_memory_range_get_end(&self), &source_buffer[9]);
+  EXPECT_EQ(ae_memory_range_get_begin(&source), &self_buffer[0]);
+  EXPECT_EQ(ae_memory_range_get_end(&source), &self_buffer[9]);
 }
 
 TEST(ae_memory_block_swap, swap_blocks_with_different_element_size) {
@@ -87,10 +88,10 @@ TEST(ae_memory_block_exchange, swap_blocks_with_equal_element_size) {
 
   ae_memory_block_exchange(&self, &source);
 
-  EXPECT_EQ(self.begin, &source_buffer[0]);
-  EXPECT_EQ(self.end, &source_buffer[9]);
-  EXPECT_EQ(source.begin, nullptr);
-  EXPECT_EQ(source.end, nullptr);
+  EXPECT_EQ(ae_memory_range_get_begin(&self), &source_buffer[0]);
+  EXPECT_EQ(ae_memory_range_get_end(&self), &source_buffer[9]);
+  EXPECT_EQ(ae_memory_range_get_begin(&source), nullptr);
+  EXPECT_EQ(ae_memory_range_get_end(&source), nullptr);
 }
 
 TEST(ae_memory_block_exchange, swap_blocks_with_different_element_size) {
