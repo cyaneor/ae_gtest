@@ -1,0 +1,5 @@
+# Запрещает короткие функции (короче 1 строки) на одной строке.
+AllowShortFunctionsOnASingleLine: None
+
+# Отключает сортировку директив `#include`.
+SortIncludes: Never
