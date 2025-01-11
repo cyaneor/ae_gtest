@@ -1626,3 +1626,106 @@ TEST(ae_memory_raw_move64, move_adjacent_with_overlap) {
     EXPECT_EQ(buffer[i + 1], (i + 1));
   }
 }
+
+TEST(ae_memory_raw_move, move64_bytes) {
+    uint64_t src[] = {1, 2, 3, 4};
+    uint64_t dst[4];
+
+    void *result =
+            ae_memory_raw_move(dst, 4 * sizeof(uint64_t), src, 4 * sizeof(uint64_t));
+    ASSERT_EQ(result, &dst[4]);
+
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(dst[i], src[i]);
+    }
+}
+
+TEST(ae_memory_raw_move, move32_bytes) {
+    uint32_t src[] = {1, 2, 3, 4};
+    uint32_t dst[4];
+
+    void *result =
+            ae_memory_raw_move(dst, 4 * sizeof(uint32_t), src, 4 * sizeof(uint32_t));
+    ASSERT_EQ(result, &dst[4]);
+
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(dst[i], src[i]);
+    }
+}
+
+TEST(ae_memory_raw_move, move16_bytes) {
+    uint16_t src[] = {1, 2, 3, 4};
+    uint16_t dst[4];
+
+    void *result =
+            ae_memory_raw_move(dst, 4 * sizeof(uint16_t), src, 4 * sizeof(uint16_t));
+    ASSERT_EQ(result, &dst[4]);
+
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(dst[i], src[i]);
+    }
+}
+
+TEST(ae_memory_raw_move, move8_bytes) {
+    uint8_t src[] = {1, 2, 3, 4};
+    uint8_t dst[4];
+
+    void *result = ae_memory_raw_move(dst, 4, src, 4);
+    ASSERT_EQ(result, &dst[4]);
+
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(dst[i], src[i]);
+    }
+}
+
+TEST(ae_memory_raw_move, move64_bytes_overlap) {
+    uint64_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    // Исходные и целевые участки данных перекрываются
+    void *result = ae_memory_raw_move(buf + 2, 4 * sizeof(uint64_t), buf, 4 * sizeof(uint64_t));
+    ASSERT_EQ(result, &buf[6]);
+
+    // Проверяем, что данные были правильно перемещены
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(buf[i + 2], i + 1);
+    }
+}
+
+TEST(ae_memory_raw_move, move32_bytes_overlap) {
+    uint32_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    // Исходные и целевые участки данных перекрываются
+    void *result = ae_memory_raw_move(buf + 2, 4 * sizeof(uint32_t), buf, 4 * sizeof(uint32_t));
+    ASSERT_EQ(result, &buf[6]);
+
+    // Проверяем, что данные были правильно перемещены
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(buf[i + 2], i + 1);
+    }
+}
+
+TEST(ae_memory_raw_move, move16_bytes_overlap) {
+    uint16_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    // Исходные и целевые участки данных перекрываются
+    void *result = ae_memory_raw_move(buf + 2, 4 * sizeof(uint16_t), buf, 4 * sizeof(uint16_t));
+    ASSERT_EQ(result, &buf[6]);
+
+    // Проверяем, что данные были правильно перемещены
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(buf[i + 2], i + 1);
+    }
+}
+
+TEST(ae_memory_raw_move, move8_bytes_overlap) {
+    uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+    // Исходные и целевые участки данных перекрываются
+    void *result = ae_memory_raw_move(buf + 2, 4, buf, 4);
+    ASSERT_EQ(result, &buf[6]);
+
+    // Проверяем, что данные были правильно перемещены
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(buf[i + 2], i + 1);
+    }
+}
