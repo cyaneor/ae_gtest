@@ -138,12 +138,10 @@ TEST(ae_memory_raw_fill64, single_byte_fill) {
 TEST(ae_memory_raw_fill, fill_with64_divisible_length) {
   const size_t len = 64;
   uint8_t buffer[len];
-  ae_u8_t value = 0xAB;
 
-  // Заполнение памяти с использованием 64-битного варианта
+  ae_u8_t value = 0xAB;
   void *result = ae_memory_raw_fill(buffer, len, value);
 
-  // Проверяем, что весь буфер заполнен значением
   for (unsigned char i : buffer) {
     ASSERT_EQ(i, value);
   }
@@ -152,12 +150,10 @@ TEST(ae_memory_raw_fill, fill_with64_divisible_length) {
 TEST(ae_memory_raw_fill, fill_with32_divisible_length) {
   const size_t len = 32;
   uint8_t buffer[len] = {};
-  ae_u8_t value = 0xCD;
 
-  // Заполнение памяти с использованием 32-битного варианта
+  ae_u8_t value = 0xCD;
   void *result = ae_memory_raw_fill(buffer, len, value);
 
-  // Проверяем, что весь буфер заполнен значением
   for (unsigned char i : buffer) {
     ASSERT_EQ(i, value);
   }
@@ -166,12 +162,10 @@ TEST(ae_memory_raw_fill, fill_with32_divisible_length) {
 TEST(ae_memory_raw_fill, fill_with16_divisible_length) {
   const size_t len = 16;
   uint8_t buffer[len];
-  ae_u8_t value = 0xEF;
 
-  // Заполнение памяти с использованием 16-битного варианта
+  ae_u8_t value = 0xEF;
   void *result = ae_memory_raw_fill(buffer, len, value);
 
-  // Проверяем, что весь буфер заполнен значением
   for (unsigned char i : buffer) {
     ASSERT_EQ(i, value);
   }
@@ -179,13 +173,11 @@ TEST(ae_memory_raw_fill, fill_with16_divisible_length) {
 
 TEST(ae_memory_raw_fill, fill_with8_divisible_length) {
   const size_t len = 8;
+
   uint8_t buffer[len];
   ae_u8_t value = 0xFF;
 
-  // Заполнение памяти с использованием 8-битного варианта
   void *result = ae_memory_raw_fill(buffer, len, value);
-
-  // Проверяем, что весь буфер заполнен значением
   for (unsigned char i : buffer) {
     ASSERT_EQ(i, value);
   }
@@ -193,13 +185,11 @@ TEST(ae_memory_raw_fill, fill_with8_divisible_length) {
 
 TEST(ae_memory_raw_fill, fill_with_non_divisible_length) {
   const size_t len = 12; // Не делится на 64, 32 или 16
+
   uint8_t buffer[len];
   ae_u8_t value = 0x01;
 
-  // Заполнение памяти с использованием 8-битного варианта
   void *result = ae_memory_raw_fill(buffer, len, value);
-
-  // Проверяем, что весь буфер заполнен значением
   for (unsigned char i : buffer) {
     ASSERT_EQ(i, value);
   }
@@ -979,6 +969,76 @@ TEST(ae_memory_raw_copy64, correct_copy) {
 
   for (ae_usize_t i = 0; i < len; ++i) {
     EXPECT_EQ(dst[i], src[i]);
+  }
+}
+
+TEST(ae_memory_raw_copy, copy_with64_divisible_length) {
+  const size_t len = 64;
+  uint8_t src[len];
+  uint8_t dst[len];
+
+  ae_u8_t value = 0xAB;
+  std::memset(src, value, len);
+
+  void *result = ae_memory_raw_copy(dst, len, src, len);
+  for (unsigned char i : dst) {
+    ASSERT_EQ(i, value);
+  }
+}
+
+TEST(ae_memory_raw_copy, copy_with32_divisible_length) {
+  const size_t len = 32;
+  uint8_t src[len];
+  uint8_t dst[len];
+
+  ae_u8_t value = 0xCD;
+  std::memset(src, value, len);
+
+  void *result = ae_memory_raw_copy(dst, len, src, len);
+  for (unsigned char i : dst) {
+    ASSERT_EQ(i, value);
+  }
+}
+
+TEST(ae_memory_raw_copy, copy_with16_divisible_length) {
+  const size_t len = 16;
+  uint8_t src[len];
+  uint8_t dst[len];
+
+  ae_u8_t value = 0xEF;
+  std::memset(src, value, len);
+
+  void *result = ae_memory_raw_copy(dst, len, src, len);
+  for (unsigned char i : dst) {
+    ASSERT_EQ(i, value);
+  }
+}
+
+TEST(ae_memory_raw_copy, copy_with8_divisible_length) {
+  const size_t len = 8;
+  uint8_t src[len];
+  uint8_t dst[len];
+
+  ae_u8_t value = 0xFF;
+  std::memset(src, value, len);
+
+  void *result = ae_memory_raw_copy(dst, len, src, len);
+  for (unsigned char i : dst) {
+    ASSERT_EQ(i, value);
+  }
+}
+
+TEST(ae_memory_raw_copy, copy_with_non_divisible_length) {
+  const size_t len = 12; // Не делится на 64, 32 или 16
+  uint8_t src[len];
+  uint8_t dst[len];
+
+  ae_u8_t value = 0x01;
+  std::memset(src, value, len);
+
+  void *result = ae_memory_raw_copy(dst, len, src, len);
+  for (unsigned char i : dst) {
+    ASSERT_EQ(i, value);
   }
 }
 
