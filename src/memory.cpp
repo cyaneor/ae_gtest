@@ -7,7 +7,7 @@ TEST(ae_memory_fill8, fill_array_with_value) {
   const ae_u8_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_fill8(arr, 5, 10);
+  ae_memory_fill8(arr,  10, 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
@@ -15,24 +15,24 @@ TEST(ae_memory_fill8, fill_partial_array) {
   const ae_u8_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_fill8(arr, 3, 5);
+  ae_memory_fill8(arr, 5, 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
 TEST(ae_memory_fill8, null_pointer) {
-  ae_memory_fill8(nullptr, 5, 10);
+  ae_memory_fill8(nullptr, 10, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_fill8, zero_length) {
   ae_u8_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_fill8(arr, 5, 0), arr);
+  EXPECT_EQ(ae_memory_fill8(arr, 0, 5), arr);
 }
 
 TEST(ae_memory_fill8, single_byte_fill) {
   ae_u8_t arr[1] = {0};
-  ae_memory_fill8(arr, 7, 1);
+  ae_memory_fill8(arr, 1, 7);
   EXPECT_EQ(arr[0], 7);
 }
 
@@ -40,7 +40,7 @@ TEST(ae_memory_fill16, fill_array_with_value) {
   const ae_u16_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u16_t arr[10] = {0};
 
-  ae_memory_fill16(arr, 5, 10);
+  ae_memory_fill16(arr, 10, 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
@@ -48,24 +48,24 @@ TEST(ae_memory_fill16, fill_partial_array) {
   const ae_u16_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u16_t arr[10] = {0};
 
-  ae_memory_fill16(arr, 3, 5);
+  ae_memory_fill16(arr, 5, 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
 TEST(ae_memory_fill16, null_pointer) {
-  ae_memory_fill16(nullptr, 5, 10);
+  ae_memory_fill16(nullptr, 10, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_fill16, zero_length) {
   ae_u16_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_fill16(arr, 5, 0), arr);
+  EXPECT_EQ(ae_memory_fill16(arr, 0, 5), arr);
 }
 
 TEST(ae_memory_fill16, single_byte_fill) {
   ae_u16_t arr[1] = {0};
-  ae_memory_fill16(arr, 7, 1);
+  ae_memory_fill16(arr, 1, 7);
   EXPECT_EQ(arr[0], 7);
 }
 
@@ -73,7 +73,7 @@ TEST(ae_memory_fill32, fill_array_with_value) {
   const ae_u32_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u32_t arr[10] = {0};
 
-  ae_memory_fill32(arr, 5, 10);
+  ae_memory_fill32(arr, 10, 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
@@ -81,24 +81,24 @@ TEST(ae_memory_fill32, fill_partial_array) {
   const ae_u32_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u32_t arr[10] = {0};
 
-  ae_memory_fill32(arr, 3, 5);
+  ae_memory_fill32(arr, 5, 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
 TEST(ae_memory_fill32, null_pointer) {
-  ae_memory_fill32(nullptr, 5, 10);
+  ae_memory_fill32(nullptr, 10, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_fill32, zero_length) {
   ae_u32_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_fill32(arr, 5, 0), arr);
+  EXPECT_EQ(ae_memory_fill32(arr, 0, 5), arr);
 }
 
 TEST(ae_memory_fill32, single_byte_fill) {
   ae_u32_t arr[1] = {0};
-  ae_memory_fill32(arr, 7, 1);
+  ae_memory_fill32(arr, 1, 7);
   EXPECT_EQ(arr[0], 7);
 }
 
@@ -106,7 +106,7 @@ TEST(ae_memory_fill64, fill_array_with_value) {
   const ae_u64_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u64_t arr[10] = {0};
 
-  ae_memory_fill64(arr, 5, 10);
+  ae_memory_fill64(arr, 10, 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
@@ -114,154 +114,154 @@ TEST(ae_memory_fill64, fill_partial_array) {
   const ae_u64_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u64_t arr[10] = {0};
 
-  ae_memory_fill64(arr, 3, 5);
+  ae_memory_fill64(arr, 5, 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
 TEST(ae_memory_fill64, null_pointer) {
-  ae_memory_fill64(nullptr, 5, 10);
+  ae_memory_fill64(nullptr, 10, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
 TEST(ae_memory_fill64, zero_length) {
   ae_u64_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_fill64(arr, 5, 0), arr);
+  EXPECT_EQ(ae_memory_fill64(arr, 0, 5), arr);
 }
 
 TEST(ae_memory_fill64, single_byte_fill) {
   ae_u64_t arr[1] = {0};
-  ae_memory_fill64(arr, 7, 1);
+  ae_memory_fill64(arr, 1, 7);
   EXPECT_EQ(arr[0], 7);
 }
 
 TEST(ae_memory_find8_val, null_pointer) {
   ae_u8_t *ptr = nullptr;
-  EXPECT_EQ(ae_memory_find8_val(ptr, 5, 10), nullptr);
+  EXPECT_EQ(ae_memory_find8_val(ptr, 10, 5), nullptr);
 }
 
 TEST(ae_memory_find8_val, find_value) {
   ae_u8_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find8_val(arr, 3, len), &arr[2]);
+  EXPECT_EQ(ae_memory_find8_val(arr, len, 3), &arr[2]);
 }
 
 TEST(ae_memory_find8_val, value_not_found) {
   ae_u8_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find8_val(arr, 6, len), nullptr);
+  EXPECT_EQ(ae_memory_find8_val(arr, len, 6), nullptr);
 }
 
 TEST(ae_memory_find8_val, empty_array) {
   ae_u8_t *arr = nullptr;
   ae_usize_t len = 0;
 
-  EXPECT_EQ(ae_memory_find8_val(arr, 3, len), nullptr);
+  EXPECT_EQ(ae_memory_find8_val(arr, len, 3), nullptr);
 }
 
 TEST(ae_memory_find8_val, find_first_element) {
   ae_u8_t arr[] = {5, 6, 7, 8};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find8_val(arr, 5, len), &arr[0]);
+  EXPECT_EQ(ae_memory_find8_val(arr, len, 5), &arr[0]);
 }
 
 TEST(ae_memory_find16_val, null_pointer) {
   ae_u16_t *ptr = nullptr;
-  EXPECT_EQ(ae_memory_find16_val(ptr, 5, 10), nullptr);
+  EXPECT_EQ(ae_memory_find16_val(ptr, 10, 5), nullptr);
 }
 
 TEST(ae_memory_find16_val, find_value) {
   ae_u16_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find16_val(arr, 3, len), &arr[2]);
+  EXPECT_EQ(ae_memory_find16_val(arr, len, 3), &arr[2]);
 }
 
 TEST(ae_memory_find16_val, value_not_found) {
   ae_u16_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find16_val(arr, 6, len), nullptr);
+  EXPECT_EQ(ae_memory_find16_val(arr, len, 6), nullptr);
 }
 
 TEST(ae_memory_find16_val, empty_array) {
   ae_u16_t *arr = nullptr;
   ae_usize_t len = 0;
 
-  EXPECT_EQ(ae_memory_find16_val(arr, 3, len), nullptr);
+  EXPECT_EQ(ae_memory_find16_val(arr, len, 3), nullptr);
 }
 
 TEST(ae_memory_find16_val, find_first_element) {
   ae_u16_t arr[] = {5, 6, 7, 8};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find16_val(arr, 5, len), &arr[0]);
+  EXPECT_EQ(ae_memory_find16_val(arr, len, 5), &arr[0]);
 }
 
 TEST(ae_memory_find32_val, null_pointer) {
   ae_u32_t *ptr = nullptr;
-  EXPECT_EQ(ae_memory_find32_val(ptr, 5, 10), nullptr);
+  EXPECT_EQ(ae_memory_find32_val(ptr, 10, 5), nullptr);
 }
 
 TEST(ae_memory_find32_val, find_value) {
   ae_u32_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find32_val(arr, 3, len), &arr[2]);
+  EXPECT_EQ(ae_memory_find32_val(arr, len, 3), &arr[2]);
 }
 
 TEST(ae_memory_find32_val, value_not_found) {
   ae_u32_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find32_val(arr, 6, len), nullptr);
+  EXPECT_EQ(ae_memory_find32_val(arr, len, 6), nullptr);
 }
 
 TEST(ae_memory_find32_val, empty_array) {
   ae_u32_t *arr = nullptr;
   ae_usize_t len = 0;
 
-  EXPECT_EQ(ae_memory_find32_val(arr, 3, len), nullptr);
+  EXPECT_EQ(ae_memory_find32_val(arr, len, 3), nullptr);
 }
 
 TEST(ae_memory_find32_val, find_first_element) {
   ae_u32_t arr[] = {5, 6, 7, 8};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find32_val(arr, 5, len), &arr[0]);
+  EXPECT_EQ(ae_memory_find32_val(arr, len, 5), &arr[0]);
 }
 
 TEST(ae_memory_find64_val, null_pointer) {
   ae_u64_t *ptr = nullptr;
-  EXPECT_EQ(ae_memory_find64_val(ptr, 5, 10), nullptr);
+  EXPECT_EQ(ae_memory_find64_val(ptr, 10, 5), nullptr);
 }
 
 TEST(ae_memory_find64_val, find_value) {
   ae_u64_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find64_val(arr, 3, len), &arr[2]);
+  EXPECT_EQ(ae_memory_find64_val(arr, len, 3), &arr[2]);
 }
 
 TEST(ae_memory_find64_val, value_not_found) {
   ae_u64_t arr[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find64_val(arr, 6, len), nullptr);
+  EXPECT_EQ(ae_memory_find64_val(arr, len, 6), nullptr);
 }
 
 TEST(ae_memory_find64_val, empty_array) {
-  EXPECT_EQ(ae_memory_find64_val(nullptr, 3, 0), nullptr);
+  EXPECT_EQ(ae_memory_find64_val(nullptr, 0, 3), nullptr);
 }
 
 TEST(ae_memory_find64_val, find_first_element) {
   ae_u64_t arr[] = {5, 6, 7, 8};
   ae_usize_t len = sizeof(arr) / sizeof(arr[0]);
 
-  EXPECT_EQ(ae_memory_find64_val(arr, 5, len), &arr[0]);
+  EXPECT_EQ(ae_memory_find64_val(arr, len, 5), &arr[0]);
 }
 
 TEST(ae_memory_compare8, null_pointers) {
