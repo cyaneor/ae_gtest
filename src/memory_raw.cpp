@@ -976,11 +976,12 @@ TEST(ae_memory_raw_copy, copy_with64_divisible_length) {
   const size_t len = 64;
   uint8_t src[len];
   uint8_t dst[len];
-
   ae_u8_t value = 0xAB;
-  std::memset(src, value, len);
 
+  std::memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
   for (unsigned char i : dst) {
     ASSERT_EQ(i, value);
   }
@@ -990,11 +991,12 @@ TEST(ae_memory_raw_copy, copy_with32_divisible_length) {
   const size_t len = 32;
   uint8_t src[len];
   uint8_t dst[len];
-
   ae_u8_t value = 0xCD;
-  std::memset(src, value, len);
 
+  std::memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
   for (unsigned char i : dst) {
     ASSERT_EQ(i, value);
   }
@@ -1004,11 +1006,12 @@ TEST(ae_memory_raw_copy, copy_with16_divisible_length) {
   const size_t len = 16;
   uint8_t src[len];
   uint8_t dst[len];
-
   ae_u8_t value = 0xEF;
-  std::memset(src, value, len);
 
+  std::memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
   for (unsigned char i : dst) {
     ASSERT_EQ(i, value);
   }
@@ -1018,11 +1021,12 @@ TEST(ae_memory_raw_copy, copy_with8_divisible_length) {
   const size_t len = 8;
   uint8_t src[len];
   uint8_t dst[len];
-
   ae_u8_t value = 0xFF;
-  std::memset(src, value, len);
 
+  std::memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
   for (unsigned char i : dst) {
     ASSERT_EQ(i, value);
   }
@@ -1032,11 +1036,12 @@ TEST(ae_memory_raw_copy, copy_with_non_divisible_length) {
   const size_t len = 12; // Не делится на 64, 32 или 16
   uint8_t src[len];
   uint8_t dst[len];
-
   ae_u8_t value = 0x01;
-  std::memset(src, value, len);
 
+  std::memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
   for (unsigned char i : dst) {
     ASSERT_EQ(i, value);
   }
@@ -1264,6 +1269,81 @@ TEST(ae_memory_raw_copy64_rev, correct_copy) {
   EXPECT_EQ(result, dst + len);
 
   EXPECT_TRUE(!memcmp(dst, src, 3));
+}
+
+TEST(ae_memory_raw_copy_rev, copy_rev_with64_divisible_length) {
+  const size_t len = 64;
+  uint8_t src[len];
+  uint8_t dst[len];
+  ae_u8_t value = 0xAB;
+
+  std::memset(src, value, len);
+  void *result = ae_memory_raw_copy_rev(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
+  for (size_t i = 0; i < len; ++i) {
+    ASSERT_EQ(dst[len - 1 - i], value);
+  }
+}
+
+TEST(ae_memory_raw_copy_rev, copy_rev_with32_divisible_length) {
+  const size_t len = 32;
+  uint8_t src[len];
+  uint8_t dst[len];
+  ae_u8_t value = 0xCD;
+
+  std::memset(src, value, len);
+  void *result = ae_memory_raw_copy_rev(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
+  for (size_t i = 0; i < len; ++i) {
+    ASSERT_EQ(dst[len - 1 - i], value);
+  }
+}
+
+TEST(ae_memory_raw_copy_rev, copy_rev_with16_divisible_length) {
+  const size_t len = 16;
+  uint8_t src[len];
+  uint8_t dst[len];
+  ae_u8_t value = 0xEF;
+
+  std::memset(src, value, len);
+  void *result = ae_memory_raw_copy_rev(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
+  for (size_t i = 0; i < len; ++i) {
+    ASSERT_EQ(dst[len - 1 - i], value);
+  }
+}
+
+TEST(ae_memory_raw_copy_rev, copy_rev_with8_divisible_length) {
+  const size_t len = 8;
+  uint8_t src[len];
+  uint8_t dst[len];
+  ae_u8_t value = 0xFF;
+
+  std::memset(src, value, len);
+  void *result = ae_memory_raw_copy_rev(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
+  for (size_t i = 0; i < len; ++i) {
+    ASSERT_EQ(dst[len - 1 - i], value);
+  }
+}
+
+TEST(ae_memory_raw_copy_rev, copy_rev_with_non_divisible_length) {
+  const size_t len = 12;
+  uint8_t src[len];
+  uint8_t dst[len];
+  ae_u8_t value = 0x01;
+
+  std::memset(src, value, len);
+  void *result = ae_memory_raw_copy_rev(dst, len, src, len);
+  EXPECT_EQ(result, dst + len);
+
+  for (size_t i = 0; i < len; ++i) {
+    ASSERT_EQ(dst[len - 1 - i], value);
+  }
 }
 
 TEST(ae_memory_raw_move8, null_pointers) {
