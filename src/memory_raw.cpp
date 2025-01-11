@@ -151,7 +151,7 @@ TEST(ae_memory_raw_fill, fill_with64_divisible_length) {
 
 TEST(ae_memory_raw_fill, fill_with32_divisible_length) {
   const size_t len = 32;
-  uint8_t buffer[len];
+  uint8_t buffer[len] = {};
   ae_u8_t value = 0xCD;
 
   // Заполнение памяти с использованием 32-битного варианта
