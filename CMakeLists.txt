@@ -63,7 +63,6 @@ add_executable(${PROJECT_NAME}
         src/memory_block.cpp
         src/memory_range.cpp
         src/memory_raw.cpp
-        src/memory.cpp
         src/main.cpp)
 
 # Добавление зависимостей и связка с библиотеками.
