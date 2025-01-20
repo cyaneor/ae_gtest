@@ -978,7 +978,7 @@ TEST(ae_memory_raw_copy, copy_with64_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xAB;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -993,7 +993,7 @@ TEST(ae_memory_raw_copy, copy_with32_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xCD;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1008,7 +1008,7 @@ TEST(ae_memory_raw_copy, copy_with16_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xEF;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1023,7 +1023,7 @@ TEST(ae_memory_raw_copy, copy_with8_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xFF;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1038,7 +1038,7 @@ TEST(ae_memory_raw_copy, copy_with_non_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0x01;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1277,7 +1277,7 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with64_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xAB;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy_rev(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1292,7 +1292,7 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with32_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xCD;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy_rev(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1307,7 +1307,7 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with16_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xEF;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy_rev(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1322,7 +1322,7 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with8_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0xFF;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy_rev(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
@@ -1337,7 +1337,7 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with_non_divisible_length) {
   uint8_t dst[len];
   ae_u8_t value = 0x01;
 
-  std::memset(src, value, len);
+  memset(src, value, len);
   void *result = ae_memory_raw_copy_rev(dst, len, src, len);
   EXPECT_EQ(result, dst + len);
 
