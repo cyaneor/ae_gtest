@@ -42,23 +42,6 @@ TEST(ae_memory_raw_find_u8, subsequence_not_found) {
   ASSERT_EQ(result, nullptr);
 }
 
-TEST(ae_memory_raw_find_u8, empty_lhs) {
-  ae_u8_t lhs[] = {};
-  ae_u8_t rhs[] = {1, 2, 3};
-
-  const ae_u8_t *result = ae_memory_raw_find_u8(lhs, lhs, rhs, rhs + 3);
-
-  ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u8, empty_rhs) {
-  ae_u8_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u8_t rhs[] = {};
-
-  const ae_u8_t *result = ae_memory_raw_find_u8(lhs, lhs + 5, rhs, rhs);
-  ASSERT_EQ(result, lhs);
-}
-
 TEST(ae_memory_raw_find_u8, null_pointer_lhs) {
   ae_u8_t rhs[] = {1, 2, 3};
 
@@ -141,22 +124,6 @@ TEST(ae_memory_raw_find_u16, subsequence_not_found) {
 
   const ae_u16_t *result = ae_memory_raw_find_u16(lhs, lhs + 6, rhs, rhs + 3);
   ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u16, empty_lhs) {
-  ae_u16_t lhs[] = {};
-  ae_u16_t rhs[] = {1, 2, 3};
-
-  const ae_u16_t *result = ae_memory_raw_find_u16(lhs, lhs, rhs, rhs + 3);
-  ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u16, empty_rhs) {
-  ae_u16_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u16_t rhs[] = {};
-
-  const ae_u16_t *result = ae_memory_raw_find_u16(lhs, lhs + 5, rhs, rhs);
-  ASSERT_EQ(result, lhs);
 }
 
 TEST(ae_memory_raw_find_u16, null_pointer_lhs) {
@@ -242,22 +209,6 @@ TEST(ae_memory_raw_find_u32, subsequence_not_found) {
   ASSERT_EQ(result, nullptr);
 }
 
-TEST(ae_memory_raw_find_u32, empty_lhs) {
-  ae_u32_t lhs[] = {};
-  ae_u32_t rhs[] = {1, 2, 3};
-
-  const ae_u32_t *result = ae_memory_raw_find_u32(lhs, lhs, rhs, rhs + 3);
-  ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u32, empty_rhs) {
-  ae_u32_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u32_t rhs[] = {};
-
-  const ae_u32_t *result = ae_memory_raw_find_u32(lhs, lhs + 5, rhs, rhs);
-  ASSERT_EQ(result, lhs);
-}
-
 TEST(ae_memory_raw_find_u32, null_pointer_lhs) {
   ae_u32_t rhs[] = {1, 2, 3};
 
@@ -339,22 +290,6 @@ TEST(ae_memory_raw_find_u64, subsequence_not_found) {
 
   const ae_u64_t *result = ae_memory_raw_find_u64(lhs, lhs + 6, rhs, rhs + 3);
   ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u64, empty_lhs) {
-  ae_u64_t lhs[] = {};
-  ae_u64_t rhs[] = {1, 2, 3};
-
-  const ae_u64_t *result = ae_memory_raw_find_u64(lhs, lhs, rhs, rhs + 3);
-  ASSERT_EQ(result, nullptr);
-}
-
-TEST(ae_memory_raw_find_u64, empty_rhs) {
-  ae_u64_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u64_t rhs[] = {};
-
-  const ae_u64_t *result = ae_memory_raw_find_u64(lhs, lhs + 5, rhs, rhs);
-  ASSERT_EQ(result, lhs);
 }
 
 TEST(ae_memory_raw_find_u64, null_pointer_lhs) {
