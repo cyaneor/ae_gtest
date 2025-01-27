@@ -1628,104 +1628,366 @@ TEST(ae_str_raw_move_u64, move_adjacent_with_overlap) {
 }
 
 TEST(ae_str_raw_move, move64_bytes) {
-    uint64_t src[] = {1, 2, 3, 4};
-    uint64_t dst[4];
+  uint64_t src[] = {1, 2, 3, 4};
+  uint64_t dst[4];
 
-    void *result =
-            ae_str_raw_move(dst, 4 * sizeof(uint64_t), src, 4 * sizeof(uint64_t));
-    ASSERT_EQ(result, &dst[4]);
+  void *result =
+      ae_str_raw_move(dst, 4 * sizeof(uint64_t), src, 4 * sizeof(uint64_t));
+  ASSERT_EQ(result, &dst[4]);
 
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(dst[i], src[i]);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(dst[i], src[i]);
+  }
 }
 
 TEST(ae_str_raw_move, move32_bytes) {
-    uint32_t src[] = {1, 2, 3, 4};
-    uint32_t dst[4];
+  uint32_t src[] = {1, 2, 3, 4};
+  uint32_t dst[4];
 
-    void *result =
-            ae_str_raw_move(dst, 4 * sizeof(uint32_t), src, 4 * sizeof(uint32_t));
-    ASSERT_EQ(result, &dst[4]);
+  void *result =
+      ae_str_raw_move(dst, 4 * sizeof(uint32_t), src, 4 * sizeof(uint32_t));
+  ASSERT_EQ(result, &dst[4]);
 
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(dst[i], src[i]);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(dst[i], src[i]);
+  }
 }
 
 TEST(ae_str_raw_move, move16_bytes) {
-    uint16_t src[] = {1, 2, 3, 4};
-    uint16_t dst[4];
+  uint16_t src[] = {1, 2, 3, 4};
+  uint16_t dst[4];
 
-    void *result =
-            ae_str_raw_move(dst, 4 * sizeof(uint16_t), src, 4 * sizeof(uint16_t));
-    ASSERT_EQ(result, &dst[4]);
+  void *result =
+      ae_str_raw_move(dst, 4 * sizeof(uint16_t), src, 4 * sizeof(uint16_t));
+  ASSERT_EQ(result, &dst[4]);
 
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(dst[i], src[i]);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(dst[i], src[i]);
+  }
 }
 
 TEST(ae_str_raw_move, move8_bytes) {
-    uint8_t src[] = {1, 2, 3, 4};
-    uint8_t dst[4];
+  uint8_t src[] = {1, 2, 3, 4};
+  uint8_t dst[4];
 
-    void *result = ae_str_raw_move(dst, 4, src, 4);
-    ASSERT_EQ(result, &dst[4]);
+  void *result = ae_str_raw_move(dst, 4, src, 4);
+  ASSERT_EQ(result, &dst[4]);
 
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(dst[i], src[i]);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(dst[i], src[i]);
+  }
 }
 
 TEST(ae_str_raw_move, move64_bytes_overlap) {
-    uint64_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  uint64_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    // Исходные и целевые участки данных перекрываются
-    void *result = ae_str_raw_move(buf + 2, 4 * sizeof(uint64_t), buf, 4 * sizeof(uint64_t));
-    ASSERT_EQ(result, &buf[6]);
+  void *result =
+      ae_str_raw_move(buf + 2, 4 * sizeof(uint64_t), buf, 4 * sizeof(uint64_t));
+  ASSERT_EQ(result, &buf[6]);
 
-    // Проверяем, что данные были правильно перемещены
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(buf[i + 2], i + 1);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(buf[i + 2], i + 1);
+  }
 }
 
 TEST(ae_str_raw_move, move32_bytes_overlap) {
-    uint32_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  uint32_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    // Исходные и целевые участки данных перекрываются
-    void *result = ae_str_raw_move(buf + 2, 4 * sizeof(uint32_t), buf, 4 * sizeof(uint32_t));
-    ASSERT_EQ(result, &buf[6]);
+  void *result =
+      ae_str_raw_move(buf + 2, 4 * sizeof(uint32_t), buf, 4 * sizeof(uint32_t));
+  ASSERT_EQ(result, &buf[6]);
 
-    // Проверяем, что данные были правильно перемещены
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(buf[i + 2], i + 1);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(buf[i + 2], i + 1);
+  }
 }
 
 TEST(ae_str_raw_move, move16_bytes_overlap) {
-    uint16_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  uint16_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    // Исходные и целевые участки данных перекрываются
-    void *result = ae_str_raw_move(buf + 2, 4 * sizeof(uint16_t), buf, 4 * sizeof(uint16_t));
-    ASSERT_EQ(result, &buf[6]);
+  void *result =
+      ae_str_raw_move(buf + 2, 4 * sizeof(uint16_t), buf, 4 * sizeof(uint16_t));
+  ASSERT_EQ(result, &buf[6]);
 
-    // Проверяем, что данные были правильно перемещены
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(buf[i + 2], i + 1);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(buf[i + 2], i + 1);
+  }
 }
 
 TEST(ae_str_raw_move, move8_bytes_overlap) {
-    uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    // Исходные и целевые участки данных перекрываются
-    void *result = ae_str_raw_move(buf + 2, 4, buf, 4);
-    ASSERT_EQ(result, &buf[6]);
+  void *result = ae_str_raw_move(buf + 2, 4, buf, 4);
+  ASSERT_EQ(result, &buf[6]);
 
-    // Проверяем, что данные были правильно перемещены
-    for (int i = 0; i < 4; i++) {
-        ASSERT_EQ(buf[i + 2], i + 1);
-    }
+  for (int i = 0; i < 4; i++) {
+    ASSERT_EQ(buf[i + 2], i + 1);
+  }
+}
+
+TEST(ae_str_raw_find_u8, find_subsequence_in_middle) {
+  ae_u8_t lhs[] = {1, 2, 3, 4, 5, 6};
+  ae_u8_t rhs[] = {3, 4, 5};
+
+  const ae_u8_t *result = ae_str_raw_find_u8(lhs, 6, rhs, 3);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_TRUE(memcmp(result, rhs, 3) == 0);
+}
+
+TEST(ae_str_raw_find_u8, find_subsequence_at_start) {
+  ae_u8_t lhs[] = {1, 2, 3, 4, 5, 6};
+  ae_u8_t rhs[] = {1, 2, 3};
+
+  const ae_u8_t *result = ae_str_raw_find_u8(lhs, 6, rhs, 3);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_TRUE(memcmp(result, rhs, 3) == 0);
+}
+
+TEST(ae_str_raw_find_u8, find_subsequence_at_end) {
+  ae_u8_t lhs[] = {1, 2, 3, 4, 5, 6};
+  ae_u8_t rhs[] = {4, 5, 6};
+
+  const ae_u8_t *result = ae_str_raw_find_u8(lhs, 6, rhs, 3);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_TRUE(memcmp(result, rhs, 3) == 0);
+}
+
+TEST(ae_str_raw_find_u8, subsequence_not_found) {
+  ae_u8_t lhs[] = {1, 2, 3, 4, 5, 6};
+  ae_u8_t rhs[] = {7, 8, 9};
+
+  const ae_u8_t *result = ae_str_raw_find_u8(lhs, 6, rhs, 3);
+
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_u8, null_pointer_lhs) {
+  ae_u8_t rhs[] = {1, 2, 3};
+
+  ASSERT_EQ(ae_str_raw_find_u8(nullptr, 0, rhs, 3), nullptr);
+  ASSERT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_u8, null_pointer_rhs) {
+  ae_u8_t lhs[] = {1, 2, 3};
+
+  ASSERT_EQ(ae_str_raw_find_u8(lhs, 3, nullptr, 0), nullptr);
+  ASSERT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u8, find_substring_in_string) {
+  ae_u8_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u8_t rhs[] = {0x03, 0x04};
+
+  const ae_u8_t *result = ae_str_raw_find_rev_u8(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 2);
+}
+
+TEST(ae_str_raw_find_rev_u8, substring_not_found) {
+  ae_u8_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u8_t rhs[] = {0x07, 0x08};
+
+  const ae_u8_t *result = ae_str_raw_find_rev_u8(lhs, 6, rhs, 2);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u8, find_substring_at_end) {
+  ae_u8_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u8_t rhs[] = {0x05, 0x06};
+
+  const ae_u8_t *result = ae_str_raw_find_rev_u8(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 4);
+}
+
+TEST(ae_str_raw_find_rev_u8, empty_arrays) {
+  const ae_u8_t *result = ae_str_raw_find_rev_u8(nullptr, 0, nullptr, 0);
+
+  ASSERT_EQ(result, nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u8, rhs_longer_than_lhs) {
+  ae_u8_t lhs[] = {0x01, 0x02, 0x03};
+  ae_u8_t rhs[] = {0x01, 0x02, 0x03, 0x04};
+
+  const ae_u8_t *result = ae_str_raw_find_rev_u8(lhs, 3, rhs, 4);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u8, null_pointer_check) {
+  ae_u8_t lhs[] = {0x01, 0x02, 0x03, 0x04};
+  ae_u8_t rhs[] = {0x03, 0x04};
+
+  ae_str_raw_find_rev_u8(nullptr, 4, rhs, 2);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u16, find_substring_in_string) {
+  ae_u16_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u16_t rhs[] = {0x03, 0x04};
+
+  const ae_u16_t *result = ae_str_raw_find_rev_u16(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 2);
+}
+
+TEST(ae_str_raw_find_rev_u16, substring_not_found) {
+  ae_u16_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u16_t rhs[] = {0x07, 0x08};
+
+  const ae_u16_t *result = ae_str_raw_find_rev_u16(lhs, 6, rhs, 2);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u16, find_substring_at_end) {
+  ae_u16_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u16_t rhs[] = {0x05, 0x06};
+
+  const ae_u16_t *result = ae_str_raw_find_rev_u16(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 4);
+}
+
+TEST(ae_str_raw_find_rev_u16, empty_arrays) {
+  const ae_u16_t *result = ae_str_raw_find_rev_u16(nullptr, 0, nullptr, 0);
+
+  ASSERT_EQ(result, nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u16, rhs_longer_than_lhs) {
+  ae_u16_t lhs[] = {0x01, 0x02, 0x03};
+  ae_u16_t rhs[] = {0x01, 0x02, 0x03, 0x04};
+
+  const ae_u16_t *result = ae_str_raw_find_rev_u16(lhs, 3, rhs, 4);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u16, null_pointer_check) {
+  ae_u16_t lhs[] = {0x01, 0x02, 0x03, 0x04};
+  ae_u16_t rhs[] = {0x03, 0x04};
+
+  ae_str_raw_find_rev_u16(nullptr, 4, rhs, 2);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u32, find_substring_in_string) {
+  ae_u32_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u32_t rhs[] = {0x03, 0x04};
+
+  const ae_u32_t *result = ae_str_raw_find_rev_u32(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 2);
+}
+
+TEST(ae_str_raw_find_rev_u32, substring_not_found) {
+  ae_u32_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u32_t rhs[] = {0x07, 0x08};
+
+  const ae_u32_t *result = ae_str_raw_find_rev_u32(lhs, 6, rhs, 2);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u32, find_substring_at_end) {
+  ae_u32_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u32_t rhs[] = {0x05, 0x06};
+
+  const ae_u32_t *result = ae_str_raw_find_rev_u32(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 4);
+}
+
+TEST(ae_str_raw_find_rev_u32, empty_arrays) {
+  const ae_u32_t *result = ae_str_raw_find_rev_u32(nullptr, 0, nullptr, 0);
+
+  ASSERT_EQ(result, nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u32, rhs_longer_than_lhs) {
+  ae_u32_t lhs[] = {0x01, 0x02, 0x03};
+  ae_u32_t rhs[] = {0x01, 0x02, 0x03, 0x04};
+
+  const ae_u32_t *result = ae_str_raw_find_rev_u32(lhs, 3, rhs, 4);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u32, null_pointer_check) {
+  ae_u32_t lhs[] = {0x01, 0x02, 0x03, 0x04};
+  ae_u32_t rhs[] = {0x03, 0x04};
+
+  ae_str_raw_find_rev_u32(nullptr, 4, rhs, 2);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u64, find_substring_in_string) {
+  ae_u64_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u64_t rhs[] = {0x03, 0x04};
+
+  const ae_u64_t *result = ae_str_raw_find_rev_u64(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 2);
+}
+
+TEST(ae_str_raw_find_rev_u64, substring_not_found) {
+  ae_u64_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u64_t rhs[] = {0x07, 0x08};
+
+  const ae_u64_t *result = ae_str_raw_find_rev_u64(lhs, 6, rhs, 2);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u64, find_substring_at_end) {
+  ae_u64_t lhs[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+  ae_u64_t rhs[] = {0x05, 0x06};
+
+  const ae_u64_t *result = ae_str_raw_find_rev_u64(lhs, 6, rhs, 2);
+
+  ASSERT_NE(result, nullptr);
+  EXPECT_EQ(result, lhs + 4);
+}
+
+TEST(ae_str_raw_find_rev_u64, empty_arrays) {
+  const ae_u64_t *result = ae_str_raw_find_rev_u64(nullptr, 0, nullptr, 0);
+
+  ASSERT_EQ(result, nullptr);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
+}
+
+TEST(ae_str_raw_find_rev_u64, rhs_longer_than_lhs) {
+  ae_u64_t lhs[] = {0x01, 0x02, 0x03};
+  ae_u64_t rhs[] = {0x01, 0x02, 0x03, 0x04};
+
+  const ae_u64_t *result = ae_str_raw_find_rev_u64(lhs, 3, rhs, 4);
+  ASSERT_EQ(result, nullptr);
+}
+
+TEST(ae_str_raw_find_rev_u64, null_pointer_check) {
+  ae_u64_t lhs[] = {0x01, 0x02, 0x03, 0x04};
+  ae_u64_t rhs[] = {0x03, 0x04};
+
+  ae_str_raw_find_rev_u64(nullptr, 4, rhs, 2);
+  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
+            AE_RUNTIME_ERROR_NULL_POINTER);
 }
