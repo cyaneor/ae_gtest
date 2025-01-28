@@ -28,7 +28,7 @@ TEST(ae_memory_block_size, valid_pointer) {
 TEST(ae_memory_block_size, null_pointer) {
   EXPECT_EQ(ae_memory_block_size(nullptr), 0);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_NULL_POINTER);
+            AE_RUNTIME_ERROR_INVALID_MEMORY_BLOCK);
 }
 
 TEST(ae_memory_block_is_empty, block_is_empty_when_size_is_zero) {

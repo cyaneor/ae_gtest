@@ -186,68 +186,64 @@ TEST(ae_memory_range_is_valid, end_is_null) {
   EXPECT_FALSE(ae_memory_range_is_valid(&range));
 }
 
-TEST(ae_memory_range_total_size, valid_memory_range) {
+TEST(ae_memory_range_size, valid_memory_range) {
   const ae_memory_range_t range = ae_memory_range_initializer(
       reinterpret_cast<void *>(0x1000), reinterpret_cast<void *>(0x2000));
 
   EXPECT_TRUE(ae_memory_range_is_valid(&range));
-  EXPECT_EQ(ae_memory_range_total_size(&range), 4096);
+  EXPECT_EQ(ae_memory_range_size(&range), 4096);
 }
 
-TEST(ae_memory_range_total_size, invalid_memory_range) {
+TEST(ae_memory_range_size, invalid_memory_range) {
   ae_memory_range_t range = ae_memory_range_initializer(
       reinterpret_cast<void *>(0x2000), reinterpret_cast<void *>(0x1000));
 
   EXPECT_FALSE(ae_memory_range_is_valid(&range));
-  EXPECT_EQ(ae_memory_range_total_size(&range), 0);
+  EXPECT_EQ(ae_memory_range_size(&range), 0);
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size,
+TEST(ae_memory_range_is_multiple_of_size,
      total_size_is_multiple_of_element_size) {
   char buffer[100]; // Создаем буфер размером 100 байт
   ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 100);
 
-  EXPECT_TRUE(
-      ae_memory_range_is_multiple_of_total_size(&range, 10)); // 100 % 10 == 0
+  EXPECT_TRUE(ae_memory_range_is_multiple_of_size(&range, 10)); // 100 % 10 == 0
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size,
+TEST(ae_memory_range_is_multiple_of_size,
      total_size_is_not_multiple_of_element_size) {
   char buffer[105]; // Создаем буфер размером 105 байт
   ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 105);
 
   EXPECT_FALSE(
-      ae_memory_range_is_multiple_of_total_size(&range, 10)); // 105 % 10 != 0
+      ae_memory_range_is_multiple_of_size(&range, 10)); // 105 % 10 != 0
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size, element_size_is_one) {
+TEST(ae_memory_range_is_multiple_of_size, element_size_is_one) {
   char buffer[50]; // Создаем буфер размером 50 байт
   ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 50);
 
-  EXPECT_TRUE(
-      ae_memory_range_is_multiple_of_total_size(&range, 1)); // 50 % 1 == 0
+  EXPECT_TRUE(ae_memory_range_is_multiple_of_size(&range, 1)); // 50 % 1 == 0
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size, total_size_is_zero) {
+TEST(ae_memory_range_is_multiple_of_size, total_size_is_zero) {
   ae_memory_range_t range = ae_memory_range_empty_initializer();
 
-  EXPECT_TRUE(
-      ae_memory_range_is_multiple_of_total_size(&range, 1)); // 0 % 1 == 0
+  EXPECT_TRUE(ae_memory_range_is_multiple_of_size(&range, 1)); // 0 % 1 == 0
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size, element_size_is_zero) {
+TEST(ae_memory_range_is_multiple_of_size, element_size_is_zero) {
   char buffer[50]; // Создаем буфер размером 50 байт
   ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 50);
 
-  EXPECT_FALSE(ae_memory_range_is_multiple_of_total_size(&range, 0));
+  EXPECT_FALSE(ae_memory_range_is_multiple_of_size(&range, 0));
 }
 
-TEST(ae_memory_range_is_multiple_of_total_size, negative_range) {
+TEST(ae_memory_range_is_multiple_of_size, negative_range) {
   char buffer[100]; // Создаем буфер размером 100 байт
   ae_memory_range_t range = ae_memory_range_initializer(buffer + 100, buffer);
 
-  EXPECT_TRUE(
-      ae_memory_range_is_multiple_of_total_size(&range, 1)); // -100 % 1 == 0
+  EXPECT_TRUE(ae_memory_range_is_multiple_of_size(&range, 1)); // -100 % 1 == 0
 }
 
 TEST(ae_memory_range_is_aligned, both_pointers_aligned) {
@@ -294,52 +290,6 @@ TEST(ae_memory_range_is_aligned, alignment_size_is_one) {
   ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 64);
 
   EXPECT_TRUE(ae_memory_range_is_aligned(&range, 1)); // 64 и 0 выровнены по 1
-}
-
-TEST(ae_memory_range_size, size_is_multiple_of_element_size) {
-  char buffer[64];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 64);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 16), 4); // 64 / 16 = 4
-}
-
-TEST(ae_memory_range_size, size_is_not_multiple_of_element_size) {
-  char buffer[65];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 65);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 16), 0);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_SIZE_IS_NOT_MULTIPLE_OF_ELEMENT_SIZE);
-}
-
-TEST(ae_memory_range_size, size_is_zero) {
-  char buffer[64];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 1), 0); // 0 / 1 = 0
-}
-
-TEST(ae_memory_range_size, element_size_is_one) {
-  char buffer[64];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 64);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 1), 64); // 64 / 1 = 64
-}
-
-TEST(ae_memory_range_size, element_size_is_zero) {
-  char buffer[64];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer, buffer + 64);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 0), 0);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_SIZE_IS_NOT_MULTIPLE_OF_ELEMENT_SIZE);
-}
-
-TEST(ae_memory_range_size, negative_range) {
-  char buffer[64];
-  ae_memory_range_t range = ae_memory_range_initializer(buffer + 64, buffer);
-
-  EXPECT_EQ(ae_memory_range_size(&range, 1), 0); // -64 / 1 = 0
 }
 
 TEST(ae_memory_range_set, reset_with_valid_pointers) {
@@ -935,55 +885,55 @@ TEST(ae_memory_range_make, single_element_range) {
   EXPECT_EQ(ae_memory_range_get_end(&range), memory + 3);
 }
 
-TEST(ae_memory_range_slice, valid_sub_range) {
+TEST(ae_memory_range_make_sub_range, valid_sub_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t main_range =
       ae_memory_range_initializer(memory, memory + 9);
 
   ae_memory_range_t sub_range =
-      ae_memory_range_slice(&main_range, memory + 3, memory + 7);
+      ae_memory_range_make_sub_range(&main_range, memory + 3, memory + 7);
 
   EXPECT_EQ(ae_memory_range_get_begin(&sub_range), memory + 3);
   EXPECT_EQ(ae_memory_range_get_end(&sub_range), memory + 7);
 }
 
-TEST(ae_memory_range_slice, sub_range_out_of_bounds) {
+TEST(ae_memory_range_make_sub_range, sub_range_out_of_bounds) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t main_range =
       ae_memory_range_initializer(memory, memory + 9);
 
-  ae_memory_range_slice(&main_range, memory + 5, memory + 15);
+  ae_memory_range_make_sub_range(&main_range, memory + 5, memory + 15);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_slice, sub_range_invalid_order) {
+TEST(ae_memory_range_make_sub_range, sub_range_invalid_order) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t main_range =
       ae_memory_range_initializer(memory, memory + 9);
 
-  ae_memory_range_slice(&main_range, memory + 7, memory + 3);
+  ae_memory_range_make_sub_range(&main_range, memory + 7, memory + 3);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_slice, sub_range_start_out_of_bounds) {
+TEST(ae_memory_range_make_sub_range, sub_range_start_out_of_bounds) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t main_range =
       ae_memory_range_initializer(memory, memory + 9);
 
-  ae_memory_range_slice(&main_range, memory + 10, memory + 15);
+  ae_memory_range_make_sub_range(&main_range, memory + 10, memory + 15);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_OUT_OF_RANGE);
 }
 
-TEST(ae_memory_range_slice, empty_sub_range) {
+TEST(ae_memory_range_make_sub_range, empty_sub_range) {
   ae_u8_t memory[10] = {0};
   ae_memory_range_t main_range =
       ae_memory_range_initializer(memory, memory + 9);
 
   ae_memory_range_t sub_range =
-      ae_memory_range_slice(&main_range, memory + 4, memory + 4);
+      ae_memory_range_make_sub_range(&main_range, memory + 4, memory + 4);
 
   EXPECT_EQ(ae_memory_range_get_begin(&sub_range), memory + 4);
   EXPECT_EQ(ae_memory_range_get_end(&sub_range), memory + 4);
