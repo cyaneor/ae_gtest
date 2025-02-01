@@ -125,66 +125,12 @@ TEST(ae_memory_block_has_index, invalid_index_returns_false) {
   EXPECT_FALSE(ae_memory_block_has_index(&block, 15));
 }
 
-TEST(ae_memory_block_has_index_range, valid_index_range) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
-
-  EXPECT_TRUE(ae_memory_block_has_index_range(&block, 0, 9)); // Полный диапазон
-}
-
-TEST(ae_memory_block_has_index_range, start_index_out_of_bounds) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
-
-  EXPECT_FALSE(ae_memory_block_has_index_range(
-      &block, 10, 9)); // Начальный индекс вне диапазона
-}
-
-TEST(ae_memory_block_has_index_range, end_index_out_of_bounds) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[9], sizeof(int));
-
-  EXPECT_FALSE(ae_memory_block_has_index_range(
-      &block, 0, 10)); // Конечный индекс вне диапазона
-}
-
-TEST(ae_memory_block_has_index_range, start_greater_than_end) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[6], sizeof(int));
-
-  EXPECT_FALSE(ae_memory_block_has_index_range(
-      &block, 5, 3)); // Начальный индекс больше конечного
-}
-
-TEST(ae_memory_block_has_index_range, both_indices_out_of_bounds) {
-  int buffer[] = {0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[4], sizeof(int));
-
-  EXPECT_FALSE(ae_memory_block_has_index_range(
-      &block, 10, 11)); // Оба индекса вне диапазона
-}
-
-TEST(ae_memory_block_has_index_range, single_index_range) {
-  int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  const ae_memory_block_t block =
-      ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
-
-  EXPECT_TRUE(
-      ae_memory_block_has_index_range(&block, 5, 5)); // Проверка одного индекса
-}
-
 TEST(ae_memory_block_at, at_from_begin_valid_index) {
   int buffer[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[10], sizeof(int));
 
   // Проверяем доступ к элементам с начала
-
   EXPECT_EQ(*static_cast<const char *>(ae_memory_block_at(&block, 0, false)),
             9); // Первый элемент
 

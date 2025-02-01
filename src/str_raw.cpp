@@ -184,7 +184,7 @@ TEST(ae_str_raw_fill, fill_with8_divisible_length) {
 }
 
 TEST(ae_str_raw_fill, fill_with_non_divisible_length) {
-  const size_t len = 12; // Не делится на 64, 32 или 16
+  const size_t len = 12;
 
   uint8_t buffer[len];
   ae_u8_t value = 0x01;
@@ -1033,7 +1033,7 @@ TEST(ae_str_raw_copy, copy_with8_divisible_length) {
 }
 
 TEST(ae_str_raw_copy, copy_with_non_divisible_length) {
-  const size_t len = 12; // Не делится на 64, 32 или 16
+  const size_t len = 12;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0x01;
