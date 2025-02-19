@@ -3,6 +3,7 @@
 #include <ae/str_raw.h>
 #include <ae/runtime_error.h>
 #include <ae/runtime_error_code.h>
+#include <ae/static_string_size.h>
 
 TEST(ae_str_raw_len_with, returns_correct_index_for_null_terminator) {
   const ae_char_t *test_str = "Hello";
@@ -79,8 +80,8 @@ TEST(ae_str_raw_len, long_string) {
 }
 
 TEST(ae_str_raw_copy_with, copy_normal_string) {
-  const char *src = "Hello, World!";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "Hello, World!";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -90,8 +91,8 @@ TEST(ae_str_raw_copy_with, copy_normal_string) {
 }
 
 TEST(ae_str_raw_copy_with, copy_empty_string) {
-  const char *src = "";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -102,7 +103,7 @@ TEST(ae_str_raw_copy_with, copy_empty_string) {
 
 TEST(ae_str_raw_copy_with, copy_string_with_null_character) {
   const char *src = "Hello\0World";
-  size_t len = ae_str_raw_len(src);
+  const ae_usize_t len = 5;
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -112,8 +113,8 @@ TEST(ae_str_raw_copy_with, copy_string_with_null_character) {
 }
 
 TEST(ae_str_raw_copy_with, copy_exact_length_string) {
-  const char *src = "ExactLengthTest";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "ExactLengthTest";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -123,8 +124,8 @@ TEST(ae_str_raw_copy_with, copy_exact_length_string) {
 }
 
 TEST(ae_str_raw_copy_with, empty_copy) {
-  const char *src = "";
-  size_t len = 0;
+  const char src[] = "";
+  const ae_usize_t len = ae_static_string_size(src);
   ae_char_t dest[1] = {};
 
   ae_str_raw_copy_with(dest, src, len);
@@ -132,8 +133,8 @@ TEST(ae_str_raw_copy_with, empty_copy) {
 }
 
 TEST(ae_str_raw_copy, copy_normal_string) {
-  const char *src = "Hello, World!";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "Hello, World!";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -143,8 +144,8 @@ TEST(ae_str_raw_copy, copy_normal_string) {
 }
 
 TEST(ae_str_raw_copy, copy_empty_string) {
-  const char *src = "";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -155,7 +156,7 @@ TEST(ae_str_raw_copy, copy_empty_string) {
 
 TEST(ae_str_raw_copy, copy_string_with_null_character) {
   const char *src = "Hello\0World";
-  size_t len = ae_str_raw_len(src);
+  const ae_usize_t len = 5;
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -165,8 +166,8 @@ TEST(ae_str_raw_copy, copy_string_with_null_character) {
 }
 
 TEST(ae_str_raw_copy, copy_exact_length_string) {
-  const char *src = "ExactLengthTest";
-  size_t len = ae_str_raw_len(src);
+  const char src[] = "ExactLengthTest";
+  const ae_usize_t len = ae_static_string_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -193,10 +194,10 @@ TEST(ae_str_raw_copy, null_pointer) {
 }
 
 TEST(ae_str_raw_cat_from, concat_with_empty_string) {
-  const char *str = "Hello";
-  const char *src = "World!";
-  size_t str_len = ae_str_raw_len(str);
-  size_t src_len = ae_str_raw_len(src);
+  const char str[] = "Hello";
+  const char src[] = "World!";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
 
   ae_char_t result[str_len + src_len + 1];
   memset(result, 0, sizeof(result));
@@ -207,10 +208,10 @@ TEST(ae_str_raw_cat_from, concat_with_empty_string) {
 }
 
 TEST(ae_str_raw_cat_from, concat_two_non_empty_strings) {
-  const char *str = "Hello";
-  const char *src = "World!";
-  size_t str_len = ae_str_raw_len(str);
-  size_t src_len = ae_str_raw_len(src);
+  const char str[] = "Hello";
+  const char src[] = "World!";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
 
   ae_char_t result[str_len + src_len + 1];
   memset(result, 0, sizeof(result));
@@ -221,10 +222,10 @@ TEST(ae_str_raw_cat_from, concat_two_non_empty_strings) {
 }
 
 TEST(ae_str_raw_cat_from, concat_empty_to_non_empty_string) {
-  const char *str = "Hello";
-  const char *src = "";
-  size_t str_len = ae_str_raw_len(str);
-  size_t src_len = ae_str_raw_len(src);
+  const char str[] = "Hello";
+  const char src[] = "";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
 
   ae_char_t result[str_len + src_len + 1];
   memset(result, 0, sizeof(result));
@@ -235,10 +236,10 @@ TEST(ae_str_raw_cat_from, concat_empty_to_non_empty_string) {
 }
 
 TEST(ae_str_raw_cat_from, concat_with_null_character) {
-  const char *str = "Hello\0World";
-  const char *src = " Test!";
-  size_t str_len = ae_str_raw_len(str);
-  size_t src_len = ae_str_raw_len(src);
+  const char str[] = "Hello\0World";
+  const char src[] = " Test!";
+  const ae_usize_t str_len = 5;
+  const ae_usize_t src_len = ae_static_string_size(src);
 
   ae_char_t result[str_len + src_len + 1];
   memset(result, 0, sizeof(result));
@@ -249,10 +250,10 @@ TEST(ae_str_raw_cat_from, concat_with_null_character) {
 }
 
 TEST(ae_str_raw_cat_from, concat_exact_length) {
-  const char *str = "Exact";
-  const char *src = "Length";
-  size_t str_len = ae_str_raw_len(str);
-  size_t src_len = ae_str_raw_len(src);
+  const char str[] = "Exact";
+  const char src[] = "Length";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
 
   ae_char_t result[str_len + src_len + 1];
   memset(result, 0, sizeof(result));
@@ -260,4 +261,61 @@ TEST(ae_str_raw_cat_from, concat_exact_length) {
   ae_str_raw_cat_from(result, 0, str, str_len);
   ae_str_raw_cat_from(result, str_len, src, src_len);
   EXPECT_STREQ(result, "ExactLength");
+}
+
+TEST(ae_str_raw_cat_with, concat_with_empty_string) {
+  const char str[] = "Hello";
+  const char src[] = "World!";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
+
+  ae_char_t result[str_len + src_len + 1];
+  memset(result, 0, sizeof(result));
+
+  ae_str_raw_cat(result, str);
+  ae_str_raw_cat_with(result, src, src_len);
+  EXPECT_STREQ(result, "HelloWorld!");
+}
+
+TEST(ae_str_raw_cat_with, concat_two_non_empty_strings) {
+  const char str[] = "Hello";
+  const char src[] = "World!";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
+
+  ae_char_t result[str_len + src_len + 1];
+  memset(result, 0, sizeof(result));
+
+  ae_str_raw_cat(result, str);
+  ae_str_raw_cat_with(result, src, src_len);
+
+  EXPECT_STREQ(result, "HelloWorld!");
+}
+
+TEST(ae_str_raw_cat_with, concat_empty_to_non_empty_string) {
+  const char str[] = "Hello";
+  const char src[] = "";
+  const ae_usize_t str_len = ae_static_string_size(str);
+  const ae_usize_t src_len = ae_static_string_size(src);
+
+  ae_char_t result[str_len + src_len + 1];
+  memset(result, 0, sizeof(result));
+
+  ae_str_raw_cat(result, str);
+  ae_str_raw_cat_with(result, src, src_len);
+  EXPECT_STREQ(result, "Hello");
+}
+
+TEST(ae_str_raw_cat_with, concat_with_null_character) {
+  const char str[] = "Hello\0World";
+  const char src[] = " Test!";
+  const ae_usize_t str_len = 5;
+  const ae_usize_t src_len = ae_static_string_size(src);
+
+  ae_char_t result[str_len + src_len + 1];
+  memset(result, 0, sizeof(result));
+
+  ae_str_raw_cat(result, str);
+  ae_str_raw_cat_with(result, src, src_len);
+  EXPECT_STREQ(result, "Hello Test!");
 }
