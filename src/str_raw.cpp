@@ -319,3 +319,309 @@ TEST(ae_str_raw_cat_with, concat_with_null_character) {
   ae_str_raw_cat_with(result, src, src_len);
   EXPECT_STREQ(result, "Hello Test!");
 }
+
+TEST(str_raw_shift_left_with, shift_zero)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, 0);
+    EXPECT_STREQ(result, "Hello");
+}
+
+TEST(str_raw_shift_left_with, shift_equal_to_length)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, len);
+    EXPECT_STREQ(result, "\0");
+}
+
+TEST(str_raw_shift_left_with, shift_greater_than_length)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, len + 1);
+    EXPECT_STREQ(result, "\0");
+}
+
+TEST(str_raw_shift_left_with, shift_by_one)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, 1);
+    EXPECT_STREQ(result, "ello");
+}
+
+TEST(str_raw_shift_left_with, shift_by_two)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, 2);
+    EXPECT_STREQ(result, "llo");
+}
+
+TEST(str_raw_shift_left_with, shift_by_three)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, 3);
+    EXPECT_STREQ(result, "lo");
+}
+
+TEST(str_raw_shift_left_with, shift_longer_than_string)
+{
+    ae_char_t str[] = "Hello";
+    ae_usize_t len = strlen(str);
+    ae_char_t *result = str_raw_shift_left_with(str, len, 100);
+    EXPECT_STREQ(result, "\0");
+}
+
+TEST(str_raw_shift_left, shift_by_two) {
+    ae_char_t str[] = "abcdef";
+    ae_char_t expected[] = "cdef";
+    
+    EXPECT_STREQ(str_raw_shift_left(str, 2), expected);
+}
+
+TEST(str_raw_shift_left, shift_by_zero) {
+    ae_char_t str[] = "abcdef";
+    ae_char_t expected[] = "abcdef";
+    
+    EXPECT_STREQ(str_raw_shift_left(str, 0), expected);
+}
+
+TEST(str_raw_shift_left, shift_by_length) {
+    ae_char_t str[] = "abcdef";
+    ae_char_t expected[] = "";
+    
+    EXPECT_STREQ(str_raw_shift_left(str, 6), expected);
+}
+
+TEST(str_raw_shift_left, shift_on_empty_string) {
+    ae_char_t str[] = "";
+    ae_char_t expected[] = "";
+    
+    EXPECT_STREQ(str_raw_shift_left(str, 3), expected);
+}
+
+TEST(str_raw_shift_left, shift_by_more_than_length) {
+    ae_char_t str[] = "abc";
+    ae_char_t expected[] = "";
+    
+    EXPECT_STREQ(str_raw_shift_left(str, 5), expected);
+}
+
+TEST(str_raw_shift_right_for, shift_less_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 2;
+    ae_char_t value = 'X';
+
+    ae_char_t expected[] = "XXabcd";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_STREQ(str, expected);
+}
+
+TEST(str_raw_shift_right_for, shift_greater_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 8;
+    ae_char_t value = 'X';
+    
+    ae_char_t expected[] = "\0abcdef";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_STREQ(str, expected);
+}
+
+TEST(str_raw_shift_right_for, no_shift)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 0;
+    ae_char_t value = 'X';
+    
+    ae_char_t expected[] = "abcdef";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_STREQ(str, expected);
+}
+
+TEST(str_raw_shift_right_for, empty_string)
+{
+    ae_char_t str[] = "";
+    ae_usize_t len = 0;
+    ae_usize_t shift = 2;
+    ae_char_t value = 'X';
+    
+    ae_char_t expected[] = "";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_STREQ(str, expected);
+}
+
+TEST(str_raw_shift_right_for, fill_value)
+{
+    ae_char_t str[] = "hello";
+    ae_usize_t len = 5;
+    ae_usize_t shift = 3;
+    ae_char_t value = 'Z';
+    
+    ae_char_t expected[] = "ZZZhe";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_STREQ(str, expected);
+}
+
+TEST(str_raw_shift_right_for, edge_case)
+{
+    ae_char_t str[] = "xyz";
+    ae_usize_t len = 3;
+    ae_usize_t shift = 3;
+    ae_char_t value = 'A';
+
+    ae_char_t expected[] = "\0yz";
+    str_raw_shift_right_for(str, len, shift, value);
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, shift_less_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 2;
+
+    ae_char_t expected[] = "  abcd";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, shift_greater_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 8;
+
+    ae_char_t expected[] = "\0bcdef";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, no_shift)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t len = 6;
+    ae_usize_t shift = 0;
+
+    ae_char_t expected[] = "abcdef";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, empty_string)
+{
+    ae_char_t str[] = "";
+    ae_usize_t len = 0;
+    ae_usize_t shift = 2;
+
+    ae_char_t expected[] = "";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, fill_space)
+{
+    ae_char_t str[] = "hello";
+    ae_usize_t len = 5;
+    ae_usize_t shift = 3;
+
+    ae_char_t expected[] = "   he";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right_with, edge_case)
+{
+    ae_char_t str[] = "xyz";
+    ae_usize_t len = 3;
+    ae_usize_t shift = 3;
+
+    ae_char_t expected[] = "\0yz";
+    str_raw_shift_right_with(str, len, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right, shift_less_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t shift = 2;
+    ae_usize_t len = ae_str_raw_len(str);
+
+    ae_char_t expected[] = "  abcd";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right, shift_greater_than_len)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t shift = 8;
+    ae_usize_t len = ae_str_raw_len(str);
+
+    ae_char_t expected[] = "\0bcdef";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right, no_shift)
+{
+    ae_char_t str[] = "abcdef";
+    ae_usize_t shift = 0;
+    ae_usize_t len = ae_str_raw_len(str);
+
+    ae_char_t expected[] = "abcdef";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right, empty_string)
+{
+    ae_char_t str[] = "";
+    ae_usize_t shift = 2;
+
+    ae_char_t expected[] = "";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, 1), 0);
+}
+
+TEST(str_raw_shift_right, fill_space)
+{
+    ae_char_t str[] = "hello";
+    ae_usize_t shift = 3;
+    ae_usize_t len = ae_str_raw_len(str);
+
+    ae_char_t expected[] = "   he";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
+
+TEST(str_raw_shift_right, edge_case)
+{
+    ae_char_t str[] = "xyz";
+    ae_usize_t shift = 3;
+    ae_usize_t len = ae_str_raw_len(str);
+
+    ae_char_t expected[] = "\0yz\0";
+    str_raw_shift_right(str, shift);
+
+    EXPECT_EQ(memcmp(str, expected, len + 1), 0);
+}
