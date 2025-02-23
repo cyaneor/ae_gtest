@@ -625,3 +625,87 @@ TEST(ae_str_raw_shift_right, edge_case)
 
     EXPECT_EQ(memcmp(str, expected, len + 1), 0);
 }
+
+TEST(ae_str_raw_trim_left, empty_string) {
+    ae_char_t input[] = "";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "");
+}
+
+TEST(ae_str_raw_trim_left, string_with_only_whitespace) {
+    ae_char_t input[] = "    \n\r\t\v\x00";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "");
+}
+
+TEST(ae_str_raw_trim_left, string_without_whitespace) {
+    ae_char_t input[] = "Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left, string_with_whitespace_at_beginning) {
+    ae_char_t input[] = "   Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left, string_with_control_characters_at_beginning) {
+    ae_char_t input[] = "\n\t  Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left, string_with_mixed_whitespace_and_text) {
+    ae_char_t input[] = " \n\r\t  Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left(input);
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, empty_string) {
+    ae_char_t input[] = "";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_only_trim_characters) {
+    ae_char_t input[] = "    \n\r\t\v\x00";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "");
+}
+
+TEST(ae_str_raw_trim_left_with, string_without_trim_characters) {
+    ae_char_t input[] = "Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_leading_spaces) {
+    ae_char_t input[] = "   Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_leading_control_characters) {
+    ae_char_t input[] = "\n\t  Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_multiple_trim_characters) {
+    ae_char_t input[] = " \n  \t Hello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, " \n\r\t\v\x00");
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_custom_trim_characters) {
+    ae_char_t input[] = "abcHello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, "abc");
+    EXPECT_STREQ(result, "Hello, world!");
+}
+
+TEST(ae_str_raw_trim_left_with, string_with_no_matching_trim_characters) {
+    ae_char_t input[] = "xyzHello, world!";
+    ae_char_t* result = ae_str_raw_trim_left_with(input, "abc");
+    EXPECT_STREQ(result, "xyzHello, world!");
+}
