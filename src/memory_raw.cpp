@@ -2048,3 +2048,63 @@ TEST(ae_memory_raw_find_rev_u64, null_pointer_check) {
     EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
               AE_RUNTIME_ERROR_NULL_POINTER);
 }
+
+TEST(ae_memory_raw_shift_left, shift_left_by_several_bytes) {
+    char memory[10] = "123456789";
+    char expected[10] = "456789\0";
+    
+    void *dst = memory;
+    void *dst_end = memory + 10;
+    ae_usize_t shift = 3;
+    
+    ae_memory_raw_shift_left(dst, dst_end, shift);
+    EXPECT_STREQ(memory, expected);
+}
+
+TEST(ae_memory_raw_shift_left, shift_left_by_zero_bytes) {
+    char memory[10] = "123456789";
+    char expected[10] = "123456789";
+    
+    void *dst = memory;
+    void *dst_end = memory + 10;
+    ae_usize_t shift = 0;
+    
+    ae_memory_raw_shift_left(dst, dst_end, shift);
+    EXPECT_STREQ(memory, expected);
+}
+
+TEST(ae_memory_raw_shift_left, shift_left_by_max_bytes) {
+    char memory[10] = "123456789";
+    char expected[10] = "\0";
+    
+    void *dst = memory;
+    void *dst_end = memory + 10;
+    ae_usize_t shift = 9;
+    
+    ae_memory_raw_shift_left(dst, dst_end, shift);
+    EXPECT_STREQ(memory, expected);
+}
+
+TEST(ae_memory_raw_shift_left, shift_empty_memory) {
+    char memory[10] = "";
+    char expected[10] = "";
+    
+    void *dst = memory;
+    void *dst_end = memory + 10;
+    ae_usize_t shift = 3;
+    
+    ae_memory_raw_shift_left(dst, dst_end, shift);
+    EXPECT_STREQ(memory, expected);
+}
+
+TEST(ae_memory_raw_shift_left, shift_more_than_available) {
+    char memory[10] = "123456789";
+    char expected[10] = "123456789";
+    
+    void *dst = memory;
+    void *dst_end = memory + 10;
+    ae_usize_t shift = 20;
+    
+    ae_memory_raw_shift_left(dst, dst_end, shift);
+    EXPECT_STREQ(memory, expected);
+}
