@@ -2108,3 +2108,48 @@ TEST(ae_memory_raw_shift_left, shift_more_than_available) {
     ae_memory_raw_shift_left(dst, dst_end, shift);
     EXPECT_STREQ(memory, expected);
 }
+
+TEST(ae_memory_raw_shift_right, no_shift) {
+    const size_t size = 10;
+    char buffer[size] = "123456789";
+    char expected[size] = "123456789";
+
+    ae_memory_raw_shift_right(buffer, buffer + size, 0);
+    EXPECT_EQ(memcmp(buffer, expected, size), 0);
+}
+
+TEST(ae_memory_raw_shift_right, shift_right_by_2) {
+    const size_t size = 10;
+    char buffer[size] = "123456789";
+    char expected[] = "1212345678";
+
+    ae_memory_raw_shift_right(buffer, buffer + size, 2);
+    EXPECT_EQ(memcmp(buffer, expected, size), 0);
+}
+
+TEST(ae_memory_raw_shift_right, shift_right_by_3) {
+    const size_t size = 10;
+    char buffer[size] = "123456789";
+    char expected[] = "1231234567";
+
+    ae_memory_raw_shift_right(buffer, buffer + size, 3);
+    EXPECT_EQ(memcmp(buffer, expected, size), 0);
+}
+
+TEST(ae_memory_raw_shift_right, shift_right_by_full_size) {
+    const size_t size = 10;
+    char buffer[size] = "123456789";
+    char expected[size] = "123456789";
+
+    ae_memory_raw_shift_right(buffer, buffer + size, size);
+    EXPECT_EQ(memcmp(buffer, expected, size), 0);
+}
+
+TEST(ae_memory_raw_shift_right, shift_right_by_more_than_size) {
+    const size_t size = 10;
+    char buffer[size] = "123456789";
+    char expected[size] = "123456789";
+
+    ae_memory_raw_shift_right(buffer, buffer + size, size + 1);
+    EXPECT_EQ(memcmp(buffer, expected, size), 0);
+}
