@@ -139,47 +139,47 @@ TEST(ae_memory_raw_fill_u64, single_byte_fill) {
     EXPECT_EQ(arr[0], 7);
 }
 
-TEST(ae_memory_raw_fill, fill_with32_divisible_length) {
+TEST(ae_memory_raw_set, fill_with32_divisible_length) {
     const size_t len = 32;
     uint8_t buffer[len] = {};
 
     ae_u8_t value = 0xCD;
-    ae_memory_raw_fill(buffer, &buffer[len], value);
+    ae_memory_raw_set(buffer, &buffer[len], value);
     for (unsigned char i: buffer) {
         ASSERT_EQ(i, value);
     }
 }
 
-TEST(ae_memory_raw_fill, fill_with16_divisible_length) {
+TEST(ae_memory_raw_set, fill_with16_divisible_length) {
     const size_t len = 16;
     uint8_t buffer[len];
 
     ae_u8_t value = 0xEF;
-    ae_memory_raw_fill(buffer, &buffer[len], value);
+    ae_memory_raw_set(buffer, &buffer[len], value);
     for (unsigned char i: buffer) {
         ASSERT_EQ(i, value);
     }
 }
 
-TEST(ae_memory_raw_fill, fill_with8_divisible_length) {
+TEST(ae_memory_raw_set, fill_with8_divisible_length) {
     const size_t len = 8;
 
     uint8_t buffer[len];
     ae_u8_t value = 0xFF;
 
-    ae_memory_raw_fill(buffer, &buffer[len], value);
+    ae_memory_raw_set(buffer, &buffer[len], value);
     for (unsigned char i: buffer) {
         ASSERT_EQ(i, value);
     }
 }
 
-TEST(ae_memory_raw_fill, fill_with_non_divisible_length) {
+TEST(ae_memory_raw_set, fill_with_non_divisible_length) {
     const size_t len = 12;
 
     uint8_t buffer[len];
     ae_u8_t value = 0x01;
 
-    ae_memory_raw_fill(buffer, &buffer[len], value);
+    ae_memory_raw_set(buffer, &buffer[len], value);
     for (unsigned char i: buffer) {
         ASSERT_EQ(i, value);
     }
