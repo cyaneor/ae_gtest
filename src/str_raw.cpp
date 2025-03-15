@@ -3,7 +3,6 @@
 #include <ae/str_raw.h>
 #include <ae/runtime_error.h>
 #include <ae/runtime_error_code.h>
-#include <ae/static_string_size.h>
 
 TEST(ae_str_raw_len, normal) {
   const ae_char_t str[] = "Hello, world!";
@@ -32,7 +31,7 @@ TEST(ae_str_raw_len, long_string) {
 
 TEST(ae_str_raw_copy_ex, copy_normal_string) {
   const char src[] = "Hello, World!";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -43,7 +42,7 @@ TEST(ae_str_raw_copy_ex, copy_normal_string) {
 
 TEST(ae_str_raw_copy_ex, copy_empty_string) {
   const char src[] = "";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -65,7 +64,7 @@ TEST(ae_str_raw_copy_ex, copy_string_with_null_character) {
 
 TEST(ae_str_raw_copy_ex, copy_exact_length_string) {
   const char src[] = "ExactLengthTest";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -76,7 +75,7 @@ TEST(ae_str_raw_copy_ex, copy_exact_length_string) {
 
 TEST(ae_str_raw_copy_ex, empty_copy) {
   const char src[] = "";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
   ae_char_t dest[1] = {};
 
   ae_str_raw_copy_ex(dest, src, len);
@@ -85,7 +84,7 @@ TEST(ae_str_raw_copy_ex, empty_copy) {
 
 TEST(ae_str_raw_copy, copy_normal_string) {
   const char src[] = "Hello, World!";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -96,7 +95,7 @@ TEST(ae_str_raw_copy, copy_normal_string) {
 
 TEST(ae_str_raw_copy, copy_empty_string) {
   const char src[] = "";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));
@@ -118,7 +117,7 @@ TEST(ae_str_raw_copy, copy_string_with_null_character) {
 
 TEST(ae_str_raw_copy, copy_exact_length_string) {
   const char src[] = "ExactLengthTest";
-  const ae_usize_t len = ae_static_string_size(src);
+  const ae_usize_t len = ae_str_raw_size(src);
 
   ae_char_t dest[len + 1];
   memset(dest, 0, sizeof(dest));

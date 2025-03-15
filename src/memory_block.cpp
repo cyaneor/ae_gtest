@@ -1,9 +1,9 @@
 #include <ae/memory_block_initializer.h>
 #include <ae/runtime_error_code.h>
-#include <ae/static_array_size.h>
 #include <ae/runtime_error.h>
 #include <ae/memory_block.h>
 #include <ae/memory_range.h>
+#include <ae/array_size.h>
 #include <gtest/gtest.h>
 
 TEST(ae_memory_block_get_element_size, valid_pointer) {
@@ -22,7 +22,7 @@ TEST(ae_memory_block_size, valid_pointer) {
   const ae_memory_block_t block =
       ae_memory_block_initializer(buffer, &buffer[7], sizeof(int));
 
-  EXPECT_EQ(ae_memory_block_size(&block), ae_static_array_size(buffer));
+  EXPECT_EQ(ae_memory_block_size(&block), ae_array_size(buffer));
 }
 
 TEST(ae_memory_block_size, null_pointer) {
