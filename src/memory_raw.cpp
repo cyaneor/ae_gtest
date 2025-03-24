@@ -3,182 +3,32 @@
 #include <ae/runtime_error.h>
 #include <ae/memory_raw.h>
 
-TEST(ae_memory_raw_set_u8, fill_array_with_value) {
+TEST(ae_memory_raw_fill, fill_array_with_value) {
   const ae_u8_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_raw_set_u8(arr, &arr[10], 5);
+  ae_memory_raw_fill(arr, &arr[10], 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
-TEST(ae_memory_raw_set_u8, fill_partial_array) {
+TEST(ae_memory_raw_fill, fill_partial_array) {
   const ae_u8_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_raw_set_u8(arr, &arr[5], 3);
+  ae_memory_raw_fill(arr, &arr[5], 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
-TEST(ae_memory_raw_set_u8, null_pointer) {
-  ae_memory_raw_set_u8(nullptr, nullptr, 5);
+TEST(ae_memory_raw_fill, null_pointer) {
+  ae_memory_raw_fill(nullptr, nullptr, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
-TEST(ae_memory_raw_set_u8, zero_length) {
-  ae_u8_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_raw_set_u8(arr, arr, 5), arr);
-}
-
-TEST(ae_memory_raw_set_u8, single_byte_fill) {
+TEST(ae_memory_raw_fill, single_byte_fill) {
   ae_u8_t arr[1] = {0};
-  ae_memory_raw_set_u8(arr, &arr[1], 7);
+  ae_memory_raw_fill(arr, &arr[1], 7);
   EXPECT_EQ(arr[0], 7);
-}
-
-TEST(ae_memory_raw_set_u16, fill_array_with_value) {
-  const ae_u16_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
-  ae_u16_t arr[10] = {0};
-
-  ae_memory_raw_set_u16(arr, &arr[10], 5);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u16, fill_partial_array) {
-  const ae_u16_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
-  ae_u16_t arr[10] = {0};
-
-  ae_memory_raw_set_u16(arr, &arr[5], 3);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u16, null_pointer) {
-  ae_memory_raw_set_u16(nullptr, nullptr, 5);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_NULL_POINTER);
-}
-
-TEST(ae_memory_raw_set_u16, zero_length) {
-  ae_u16_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_raw_set_u16(arr, arr, 5), arr);
-}
-
-TEST(ae_memory_raw_set_u16, single_byte_fill) {
-  ae_u16_t arr[1] = {0};
-  ae_memory_raw_set_u16(arr, &arr[1], 7);
-  EXPECT_EQ(arr[0], 7);
-}
-
-TEST(ae_memory_raw_set_u32, fill_array_with_value) {
-  const ae_u32_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
-  ae_u32_t arr[10] = {0};
-
-  ae_memory_raw_set_u32(arr, &arr[10], 5);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u32, fill_partial_array) {
-  const ae_u32_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
-  ae_u32_t arr[10] = {0};
-
-  ae_memory_raw_set_u32(arr, &arr[5], 3);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u32, null_pointer) {
-  ae_memory_raw_set_u32(nullptr, nullptr, 5);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_NULL_POINTER);
-}
-
-TEST(ae_memory_raw_set_u32, zero_length) {
-  ae_u32_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_raw_set_u32(arr, arr, 5), arr);
-}
-
-TEST(ae_memory_raw_set_u32, single_byte_fill) {
-  ae_u32_t arr[1] = {0};
-  ae_memory_raw_set_u32(arr, &arr[1], 7);
-  EXPECT_EQ(arr[0], 7);
-}
-
-TEST(ae_memory_raw_set_u64, fill_array_with_value) {
-  const ae_u64_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
-  ae_u64_t arr[10] = {0};
-
-  ae_memory_raw_set_u64(arr, &arr[10], 5);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u64, fill_partial_array) {
-  const ae_u64_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
-  ae_u64_t arr[10] = {0};
-
-  ae_memory_raw_set_u64(arr, &arr[5], 3);
-  EXPECT_TRUE(!memcmp(arr, expected, 10));
-}
-
-TEST(ae_memory_raw_set_u64, null_pointer) {
-  ae_memory_raw_set_u64(nullptr, nullptr, 5);
-  EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
-            AE_RUNTIME_ERROR_NULL_POINTER);
-}
-
-TEST(ae_memory_raw_set_u64, zero_length) {
-  ae_u64_t arr[10] = {0};
-  EXPECT_EQ(ae_memory_raw_set_u64(arr, arr, 5), arr);
-}
-
-TEST(ae_memory_raw_set_u64, single_byte_fill) {
-  ae_u64_t arr[1] = {0};
-  ae_memory_raw_set_u64(arr, &arr[1], 7);
-  EXPECT_EQ(arr[0], 7);
-}
-
-TEST(ae_memory_raw_set, fill_with32_divisible_length) {
-  const size_t len = 32;
-  uint8_t buffer[len] = {};
-
-  ae_u8_t value = 0xCD;
-  ae_memory_raw_set(buffer, &buffer[len], value);
-  for (unsigned char i : buffer) {
-    ASSERT_EQ(i, value);
-  }
-}
-
-TEST(ae_memory_raw_set, fill_with16_divisible_length) {
-  const size_t len = 16;
-  uint8_t buffer[len];
-
-  ae_u8_t value = 0xEF;
-  ae_memory_raw_set(buffer, &buffer[len], value);
-  for (unsigned char i : buffer) {
-    ASSERT_EQ(i, value);
-  }
-}
-
-TEST(ae_memory_raw_set, fill_with8_divisible_length) {
-  const size_t len = 8;
-
-  uint8_t buffer[len];
-  ae_u8_t value = 0xFF;
-
-  ae_memory_raw_set(buffer, &buffer[len], value);
-  for (unsigned char i : buffer) {
-    ASSERT_EQ(i, value);
-  }
-}
-
-TEST(ae_memory_raw_set, fill_with_non_divisible_length) {
-  const size_t len = 12;
-
-  uint8_t buffer[len];
-  ae_u8_t value = 0x01;
-
-  ae_memory_raw_set(buffer, &buffer[len], value);
-  for (unsigned char i : buffer) {
-    ASSERT_EQ(i, value);
-  }
 }
 
 TEST(ae_memory_raw_compare, null_pointers) {
