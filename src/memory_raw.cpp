@@ -383,243 +383,64 @@ TEST(ae_memory_raw_compare, compare_equal_after_different_elements) {
   EXPECT_EQ(ae_memory_raw_compare(lhs, &lhs[len], rhs, &rhs[len]), &lhs[0]);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, null_pointers) {
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(nullptr, nullptr, nullptr, nullptr),
+TEST(ae_memory_raw_compare_from_end, null_pointers) {
+  EXPECT_EQ(ae_memory_raw_compare_from_end(nullptr, nullptr, nullptr, nullptr),
             nullptr);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, compare_same_length) {
+TEST(ae_memory_raw_compare_from_end, compare_same_length) {
   ae_u8_t lhs[] = {1, 2, 3, 4, 5};
   ae_u8_t rhs[] = {1, 2, 3, 4, 5};
   ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
 
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(lhs, &lhs[len], rhs, &rhs[len]),
+  EXPECT_EQ(ae_memory_raw_compare_from_end(lhs, &lhs[len], rhs, &rhs[len]),
             nullptr);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, compare_different_length) {
+TEST(ae_memory_raw_compare_from_end, compare_different_length) {
   ae_u8_t lhs[] = {1, 2, 3, 4, 5};
   ae_u8_t rhs[] = {1, 2, 3};
   ae_usize_t lhs_len = sizeof(lhs) / sizeof(lhs[0]);
   ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
 
   EXPECT_EQ(
-      ae_memory_raw_compare_rev_u8(lhs, &lhs[lhs_len], rhs, &rhs[rhs_len]),
+      ae_memory_raw_compare_from_end(lhs, &lhs[lhs_len], rhs, &rhs[rhs_len]),
       &lhs[4]);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, compare_different_values) {
+TEST(ae_memory_raw_compare_from_end, compare_different_values) {
   ae_u8_t lhs[] = {1, 2, 3, 4, 5};
   ae_u8_t rhs[] = {1, 2, 3, 0, 5};
   ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
 
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(lhs, &lhs[len], rhs, &rhs[len]),
+  EXPECT_EQ(ae_memory_raw_compare_from_end(lhs, &lhs[len], rhs, &rhs[len]),
             &lhs[3]);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, empty_array) {
+TEST(ae_memory_raw_compare_from_end, empty_array) {
   ae_u8_t rhs[] = {1, 2, 3};
   ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
 
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(nullptr, nullptr, rhs, &rhs[rhs_len]),
-            nullptr);
+  EXPECT_EQ(
+      ae_memory_raw_compare_from_end(nullptr, nullptr, rhs, &rhs[rhs_len]),
+      nullptr);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, compare_equal_after_different_elements) {
+TEST(ae_memory_raw_compare_from_end, compare_equal_after_different_elements) {
   ae_u8_t lhs[] = {1, 2, 3, 4, 5};
   ae_u8_t rhs[] = {6, 7, 8, 4, 5};
   ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
 
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(lhs, &lhs[len], rhs, &rhs[len]),
+  EXPECT_EQ(ae_memory_raw_compare_from_end(lhs, &lhs[len], rhs, &rhs[len]),
             &lhs[2]);
 }
 
-TEST(ae_memory_raw_compare_rev_u8, compare_same_last_elements) {
+TEST(ae_memory_raw_compare_from_end, compare_same_last_elements) {
   ae_u8_t lhs[] = {0, 0, 0, 0, 5};
   ae_u8_t rhs[] = {0, 0, 0, 0, 5};
   ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
 
-  EXPECT_EQ(ae_memory_raw_compare_rev_u8(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, null_pointers) {
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(nullptr, nullptr, nullptr, nullptr),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, compare_same_length) {
-  ae_u16_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u16_t rhs[] = {1, 2, 3, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, compare_different_length) {
-  ae_u16_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u16_t rhs[] = {1, 2, 3};
-  ae_usize_t lhs_len = sizeof(lhs) / sizeof(lhs[0]);
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(
-      ae_memory_raw_compare_rev_u16(lhs, &lhs[lhs_len], rhs, &rhs[rhs_len]),
-      &lhs[4]);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, compare_different_values) {
-  ae_u16_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u16_t rhs[] = {1, 2, 3, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[3]);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, empty_array) {
-  ae_u16_t rhs[] = {1, 2, 3};
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(nullptr, nullptr, rhs, &rhs[rhs_len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, compare_equal_after_different_elements) {
-  ae_u16_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u16_t rhs[] = {6, 7, 8, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[2]);
-}
-
-TEST(ae_memory_raw_compare_rev_u16, compare_same_last_elements) {
-  ae_u16_t lhs[] = {0, 0, 0, 0, 5};
-  ae_u16_t rhs[] = {0, 0, 0, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u16(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, null_pointers) {
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(nullptr, nullptr, nullptr, nullptr),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, compare_same_length) {
-  ae_u32_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u32_t rhs[] = {1, 2, 3, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, compare_different_length) {
-  ae_u32_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u32_t rhs[] = {1, 2, 3};
-  ae_usize_t lhs_len = sizeof(lhs) / sizeof(lhs[0]);
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(
-      ae_memory_raw_compare_rev_u32(lhs, &lhs[lhs_len], rhs, &rhs[rhs_len]),
-      &lhs[4]);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, compare_different_values) {
-  ae_u32_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u32_t rhs[] = {1, 2, 3, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[3]);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, empty_array) {
-  ae_u32_t rhs[] = {1, 2, 3};
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(nullptr, nullptr, rhs, &rhs[rhs_len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, compare_equal_after_different_elements) {
-  ae_u32_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u32_t rhs[] = {6, 7, 8, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[2]);
-}
-
-TEST(ae_memory_raw_compare_rev_u32, compare_same_last_elements) {
-  ae_u32_t lhs[] = {0, 0, 0, 0, 5};
-  ae_u32_t rhs[] = {0, 0, 0, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u32(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, null_pointers) {
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(nullptr, nullptr, nullptr, nullptr),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, compare_same_length) {
-  ae_u64_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u64_t rhs[] = {1, 2, 3, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(lhs, &lhs[len], rhs, &rhs[len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, compare_different_length) {
-  ae_u64_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u64_t rhs[] = {1, 2, 3};
-  ae_usize_t lhs_len = sizeof(lhs) / sizeof(lhs[0]);
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(
-      ae_memory_raw_compare_rev_u64(lhs, &lhs[lhs_len], rhs, &rhs[rhs_len]),
-      &lhs[4]);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, compare_different_values) {
-  ae_u64_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u64_t rhs[] = {1, 2, 3, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[3]);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, empty_array) {
-  ae_u64_t rhs[] = {1, 2, 3};
-  ae_usize_t rhs_len = sizeof(rhs) / sizeof(rhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(nullptr, nullptr, rhs, &rhs[rhs_len]),
-            nullptr);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, compare_equal_after_different_elements) {
-  ae_u64_t lhs[] = {1, 2, 3, 4, 5};
-  ae_u64_t rhs[] = {6, 7, 8, 4, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(lhs, &lhs[len], rhs, &rhs[len]),
-            &lhs[2]);
-}
-
-TEST(ae_memory_raw_compare_rev_u64, compare_same_last_elements) {
-  ae_u64_t lhs[] = {0, 0, 0, 0, 5};
-  ae_u64_t rhs[] = {0, 0, 0, 0, 5};
-  ae_usize_t len = sizeof(lhs) / sizeof(lhs[0]);
-
-  EXPECT_EQ(ae_memory_raw_compare_rev_u64(lhs, &lhs[len], rhs, &rhs[len]),
+  EXPECT_EQ(ae_memory_raw_compare_from_end(lhs, &lhs[len], rhs, &rhs[len]),
             nullptr);
 }
 
@@ -698,14 +519,14 @@ TEST(ae_memory_raw_copy, copy_with_non_divisible_length) {
   }
 }
 
-TEST(ae_memory_raw_copy_rev, copy_rev_with64_divisible_length) {
+TEST(ae_memory_raw_copy_from_end, copy_rev_with64_divisible_length) {
   const size_t len = 64;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0xAB;
 
   memset(src, value, len);
-  void *result = ae_memory_raw_copy_rev(dst, &dst[len], src, &src[len]);
+  void *result = ae_memory_raw_copy_from_end(dst, &dst[len], src, &src[len]);
   EXPECT_EQ(result, dst);
 
   for (size_t i = 0; i < len; ++i) {
@@ -713,14 +534,14 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with64_divisible_length) {
   }
 }
 
-TEST(ae_memory_raw_copy_rev, copy_rev_with32_divisible_length) {
+TEST(ae_memory_raw_copy_from_end, copy_rev_with32_divisible_length) {
   const size_t len = 32;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0xCD;
 
   memset(src, value, len);
-  void *result = ae_memory_raw_copy_rev(dst, &dst[len], src, &src[len]);
+  void *result = ae_memory_raw_copy_from_end(dst, &dst[len], src, &src[len]);
   EXPECT_EQ(result, dst);
 
   for (size_t i = 0; i < len; ++i) {
@@ -728,14 +549,14 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with32_divisible_length) {
   }
 }
 
-TEST(ae_memory_raw_copy_rev, copy_rev_with16_divisible_length) {
+TEST(ae_memory_raw_copy_from_end, copy_rev_with16_divisible_length) {
   const size_t len = 16;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0xEF;
 
   memset(src, value, len);
-  void *result = ae_memory_raw_copy_rev(dst, &dst[len], src, &src[len]);
+  void *result = ae_memory_raw_copy_from_end(dst, &dst[len], src, &src[len]);
   EXPECT_EQ(result, dst);
 
   for (size_t i = 0; i < len; ++i) {
@@ -743,14 +564,14 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with16_divisible_length) {
   }
 }
 
-TEST(ae_memory_raw_copy_rev, copy_rev_with8_divisible_length) {
+TEST(ae_memory_raw_copy_from_end, copy_rev_with8_divisible_length) {
   const size_t len = 8;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0xFF;
 
   memset(src, value, len);
-  void *result = ae_memory_raw_copy_rev(dst, &dst[len], src, &src[len]);
+  void *result = ae_memory_raw_copy_from_end(dst, &dst[len], src, &src[len]);
   EXPECT_EQ(result, dst);
 
   for (size_t i = 0; i < len; ++i) {
@@ -758,14 +579,14 @@ TEST(ae_memory_raw_copy_rev, copy_rev_with8_divisible_length) {
   }
 }
 
-TEST(ae_memory_raw_copy_rev, copy_rev_with_non_divisible_length) {
+TEST(ae_memory_raw_copy_from_end, copy_rev_with_non_divisible_length) {
   const size_t len = 12;
   uint8_t src[len];
   uint8_t dst[len];
   ae_u8_t value = 0x01;
 
   memset(src, value, len);
-  void *result = ae_memory_raw_copy_rev(dst, &dst[len], src, &src[len]);
+  void *result = ae_memory_raw_copy_from_end(dst, &dst[len], src, &src[len]);
   EXPECT_EQ(result, dst);
 
   for (size_t i = 0; i < len; ++i) {
