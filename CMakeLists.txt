@@ -21,11 +21,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(gtest_force_shared_crt ON CACHE BOOL
         "Установка переменной gtest_force_shared_crt значение ON, чтобы использовать общий CRT в Google Test.")
 
-set(AE_OPTION_RUNTIME_ALLOCATOR_INIT_STDLIB ON CACHE BOOL
+set(AE_LIBRARY_OPTION_RUNTIME_ALLOCATOR_INIT_STDLIB ON CACHE BOOL
         "Использовать функции из stdlib для инициализации распределителя времени выполнения.")
 
-set(AE_OPTION_FILL_ZERO_AFTER_MEMORY_ALLOCATE ON CACHE BOOL
+set(AE_LIBRARY_OPTION_FILL_ZERO_AFTER_MEMORY_ALLOCATE ON CACHE BOOL
         "Новый выделенный участок памяти заполняется нулями.")
+
+set(AE_LIBRARY_OPTION_USE_STD_WCHAR ON CACHE BOOL
+        "Использовать стандартный тип wchar_t.")
 
 # ----------------------------------------------------------------
 # Получение репозиториев
@@ -33,8 +36,8 @@ set(AE_OPTION_FILL_ZERO_AFTER_MEMORY_ALLOCATE ON CACHE BOOL
 
 # Объявление ae как внешнюю зависимость.
 FetchContent_Declare(ae
-    GIT_REPOSITORY https://github.com/cyaneor/ae.git
-    GIT_TAG HEAD
+        GIT_REPOSITORY https://github.com/cyaneor/ae.git
+        GIT_TAG HEAD
 )
 
 # Объявление googletest как внешнюю зависимость.
@@ -63,6 +66,7 @@ add_executable(${PROJECT_NAME}
         src/memory_block.cpp
         src/memory_range.cpp
         src/memory_raw.cpp
+        src/wstr_raw.cpp
         src/str_raw.cpp
         src/main.cpp)
 
