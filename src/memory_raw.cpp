@@ -3,31 +3,31 @@
 #include <ae/runtime_error.h>
 #include <ae/memory_raw.h>
 
-TEST(ae_memory_raw_fill, fill_array_with_value) {
+TEST(ae_memory_raw_set_value, fill_array_with_value) {
   const ae_u8_t expected[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_raw_fill(arr, &arr[10], 5);
+  ae_memory_raw_set_value(arr, &arr[10], 5);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
-TEST(ae_memory_raw_fill, fill_partial_array) {
+TEST(ae_memory_raw_set_value, fill_partial_array) {
   const ae_u8_t expected[10] = {3, 3, 3, 3, 3, 0, 0, 0, 0, 0};
   ae_u8_t arr[10] = {0};
 
-  ae_memory_raw_fill(arr, &arr[5], 3);
+  ae_memory_raw_set_value(arr, &arr[5], 3);
   EXPECT_TRUE(!memcmp(arr, expected, 10));
 }
 
-TEST(ae_memory_raw_fill, null_pointer) {
-  ae_memory_raw_fill(nullptr, nullptr, 5);
+TEST(ae_memory_raw_set_value, null_pointer) {
+  ae_memory_raw_set_value(nullptr, nullptr, 5);
   EXPECT_EQ(ae_error_get_code_and_clear(ae_runtime_error()),
             AE_RUNTIME_ERROR_NULL_POINTER);
 }
 
-TEST(ae_memory_raw_fill, single_byte_fill) {
+TEST(ae_memory_raw_set_value, single_byte_fill) {
   ae_u8_t arr[1] = {0};
-  ae_memory_raw_fill(arr, &arr[1], 7);
+  ae_memory_raw_set_value(arr, &arr[1], 7);
   EXPECT_EQ(arr[0], 7);
 }
 
