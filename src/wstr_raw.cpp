@@ -50,41 +50,41 @@ TEST(ae_wstr_raw_find_char, case_sensitive) {
 }
 
 TEST(ae_wstr_raw_find_char, russian_chars) {
-  const ae_wchar_t str[] = L"Привет";
+  const ae_wchar_t str[] = L"\u041F\u0440\u0438\u0432\u0435\u0442";  // Привет
   ae_usize_t len = 6;
-  ae_wchar_t value = L'в';
+  ae_wchar_t value = L'\u0432';  // в
   const ae_wstr_raw_t result = ae_wstr_raw_find_char(str, len, value);
   EXPECT_EQ(result, &str[3]);
 }
 
 TEST(ae_wstr_raw_find_char, japanese_chars) {
-  const ae_wchar_t str[] = L"こんにちは";
+  const ae_wchar_t str[] = L"\u3053\u3093\u306B\u3061\u306F";  // こんにちは
   ae_usize_t len = 5;
-  ae_wchar_t value = L'に';
+  ae_wchar_t value = L'\u306B';  // に
   const ae_wstr_raw_t result = ae_wstr_raw_find_char(str, len, value);
   EXPECT_EQ(result, &str[2]);
 }
 
 TEST(ae_wstr_raw_find_char, arabic_chars) {
-  const ae_wchar_t str[] = L"مرحبًا";
+  const ae_wchar_t str[] = L"\u0645\u0631\u062D\u0628\u064B\u0627";  // مرحبًا
   ae_usize_t len = 6;
-  ae_wchar_t value = L'ر';
+  ae_wchar_t value = L'\u0631';  // ر
   const ae_wstr_raw_t result = ae_wstr_raw_find_char(str, len, value);
   EXPECT_EQ(result, &str[1]);
 }
 
 TEST(ae_wstr_raw_find_char, chinese_chars) {
-  const ae_wchar_t str[] = L"你好";
-  ae_usize_t len = 3;
-  ae_wchar_t value = L'你';
+  const ae_wchar_t str[] = L"\u4F60\u597D";  // 你好
+  ae_usize_t len = 2;  // Исправлено: длина строки 2, а не 3
+  ae_wchar_t value = L'\u4F60';  // 你
   const ae_wstr_raw_t result = ae_wstr_raw_find_char(str, len, value);
   EXPECT_EQ(result, &str[0]);
 }
 
 TEST(ae_wstr_raw_find_char, korean_chars) {
-  const ae_wchar_t str[] = L"안녕하세요";
+  const ae_wchar_t str[] = L"\uC548\uB155\uD558\uC138\uC694";  // 안녕하세요
   ae_usize_t len = 5;
-  ae_wchar_t value = L'하';
+  ae_wchar_t value = L'\uD558';  // 하
   const ae_wstr_raw_t result = ae_wstr_raw_find_char(str, len, value);
   EXPECT_EQ(result, &str[2]);
 }
